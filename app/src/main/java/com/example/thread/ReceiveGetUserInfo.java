@@ -22,6 +22,7 @@ public class ReceiveGetUserInfo extends Thread {
     private Socket socket;
     private Handler handler;
     public boolean exit = false;
+    private  String data = "";
     public ReceiveGetUserInfo(Handler handler){
         this.handler = handler;
     }
@@ -33,24 +34,27 @@ public class ReceiveGetUserInfo extends Thread {
             InputStream is = socket.getInputStream();
             socket.setSoTimeout(2000);
             int len = 0;
-            String data = null;
+
             byte[] b = new byte[1024];
-            while((len = is.read(b))!=-1){
-                data = new String(b,0,len);
-                Message msg = new Message();
-                msg.what = 1;
-                msg.obj = data;
-                handler.sendMessage(msg);
-                if(exit == true){
-                    break;
-                }
-            }
+            byte[] c = new byte[1];
+
+              while ((len = is.read(b)) != -1) {
+                  data += new String(b, 0, len);
+                  if (!(b[5] == c[0])) {
+                      Message msg = new Message();
+                      msg.what = 1;
+                      msg.obj = data;
+                      handler.sendMessage(msg);
+                      data = "";
+                  }
+              }
         } catch (IOException e) {
             System.out.println("没有更多数据接收，线程退出");
             Message msg = new Message();
             msg.what = 2;
             handler.sendMessage(msg);
         }
+
 
     }
 }

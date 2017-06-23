@@ -1,68 +1,70 @@
 package com.example.activity;
-
-import android.content.BroadcastReceiver;
-import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
-import com.example.service.MyService;
+import com.example.thread.ReceiveMessageThread;
 import com.example.thread.SendThread;
 
 
 
 public class LoginActivity extends AppCompatActivity {
     private SharedPreferences pref;
+    private SendThread st;
     private SharedPreferences.Editor editor;
+    private String flag = null;
     private EditText accountEt;
     private EditText pwdEt;
     public static String message = null;
     public static String data = null;
-    private BroadcastReceiver mReceiver = new BroadcastReceiver() {
+    private Handler handler = new Handler(){
         @Override
-        public void onReceive(Context context, Intent intent) {
-            String action = intent.getAction();
-            if("RECEIVEMESSAGESUCCESS1".equals(action)) {
-                String str1 = intent.getStringExtra("data");
-                if ("#0".equals(str1)) {
-                    new SendThread(message).start();
-                }else{
-                    Toast.makeText(LoginActivity.this,"通信版本错误",Toast.LENGTH_SHORT).show();
-                }
-            }else if("RECEIVEMESSAGESUCCESS2".equals(action)){
-                String str2 = intent.getStringExtra("data");
-                if (!"#E".equals(str2) && !"#F".equals(str2)) {
-                    String[] data = str2.split("\\$");
-                    int num = Integer.valueOf(data[0].substring(2,4));
-                    String[] gdtm_id = new String[num];
-                    for(int i=0;i<gdtm_id.length;i++){
-                        gdtm_id[i] = data[i+1];
+        public void handleMessage(Message msg) {
+            switch (msg.what){
+                case 1:
+                    String str = (String)msg.obj;
+                    if("V50".equals(flag)) {
+                        if ("#0".equals(str)) {
+                            flag = message;
+                             new SendThread(message).start();
+
+                        } else {
+                            Toast.makeText(LoginActivity.this, "通信版本错误", Toast.LENGTH_SHORT).show();
+                        }
+                    }else{
+                        if (!"#E".equals(str) && !"#F".equals(str)) {
+                            String[] data = str.split("\\$");
+                            String[] gdtm_id = new String[data.length-1];
+                            for(int i=0;i<gdtm_id.length;i++){
+                                    gdtm_id[i] = data[i + 1];
+                            }
+                            Intent intent = new Intent(LoginActivity.this,MainActivity.class);
+                            intent.putExtra("number",data.length-1);
+                            intent.putExtra("gdtm_id",gdtm_id);
+                            startActivity(intent);
+                        }else if ("#E".equals(str)){
+                            Toast.makeText(LoginActivity.this,"密码错误",Toast.LENGTH_SHORT).show();
+
+                        }else if("#F".equals(str)){
+                            Toast.makeText(LoginActivity.this,"ID不存在",Toast.LENGTH_SHORT).show();
+                        }
                     }
-                    Intent intent2 = new Intent(context,MainActivity.class);
-                    intent2.putExtra("number",num);
-                    intent2.putExtra("gdtm_id",gdtm_id);
-                    context.startActivity(intent2);
-
-                }else if ("#E".equals(str2)){
-                    Toast.makeText(context,"密码错误",Toast.LENGTH_SHORT).show();
-
-                }else if("#F".equals(str2)){
-                    Toast.makeText(context,"ID不存在",Toast.LENGTH_SHORT).show();
-                }
-
+                    break;
 
             }
         }
     };
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.login);
+        ReceiveMessageThread  rmt = new ReceiveMessageThread(handler);
+        rmt.start();
         pref = getSharedPreferences("data", MODE_PRIVATE);
         accountEt = (EditText) findViewById(R.id.accountEt);
         pwdEt = (EditText) findViewById(R.id.pwdEt);
@@ -72,35 +74,17 @@ public class LoginActivity extends AppCompatActivity {
             accountEt.setText(account);
             pwdEt.setText(password);
         }
-       Intent bindIntent = new Intent(this,MyService.class);
-       startService(bindIntent);
 
-
-    }
-
-    public void registerReceiver() {
-        IntentFilter intentFilter = new IntentFilter();
-        intentFilter.addAction("RECEIVEMESSAGESUCCESS1");
-        IntentFilter intentFilter2 = new IntentFilter();
-        intentFilter2.addAction("RECEIVEMESSAGESUCCESS2");
-        registerReceiver(mReceiver, intentFilter);
-        registerReceiver(mReceiver, intentFilter2);
-    }
-    //解绑服务
-    public void unBindService(){
-        Intent unBind =  new Intent(this, MyService.class);
-        stopService(unBind);
     }
     @Override
     protected void onResume() {
         super.onResume();
-        registerReceiver();
     }
     @Override
     protected void onPause() {
         super.onPause();
-        unBindService();
-        unregisterReceiver(mReceiver);
+
+
 
     }
 
@@ -113,7 +97,8 @@ public class LoginActivity extends AppCompatActivity {
             editor.putString("account", account);
             editor.putString("password", password);
             editor.apply();
-            new SendThread("V50").start();
+            flag = "V50";
+            new SendThread(flag).start();
         }
 
 

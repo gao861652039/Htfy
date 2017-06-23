@@ -46,6 +46,7 @@ import java.util.List;
  */
 public class UserFragment extends Fragment {
     private BottomTabBar tb;
+    private SendThread st;
     private ProgressDialog progressDialog;
     private ArrayList<String> macNum = new ArrayList<>();
     private ArrayList<String> userInfo = new ArrayList<>();
@@ -60,9 +61,11 @@ public class UserFragment extends Fragment {
               switch (msg.what){
                   case 1:
                       String str = (String)msg.obj;
+//                      System.out.println("str:"+str);
                       userInfo.add(str);
                       break;
                   case 2:
+                      System.out.println("进入case2");
                       for(int i=0;i<macNum.size();i++){
                           String[] user = userInfo.get(i).split("\\|");
                           String  macRoom = macNum.get(i);
@@ -119,7 +122,6 @@ public class UserFragment extends Fragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-
         ReceiveGetUserInfo rgu = new ReceiveGetUserInfo(handler);
         rgu.start();
         progressDialog = new ProgressDialog(getActivity());
@@ -132,13 +134,15 @@ public class UserFragment extends Fragment {
         recyclerView.setLayoutManager(layoutManager);
 
         for(int i=0;i<gdtm_id.length;i++){
-              new SendThread("CB"+gdtm_id[i]).start();
-              macNum.add(gdtm_id[i]);
-//              list.add(new UserInfo(gdtm_id[i],"","","","",View.VISIBLE));
+
+             new SendThread("CB"+gdtm_id[i]).start();
+            try {
+                Thread.sleep(10);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            macNum.add(gdtm_id[i]);
         }
-
-
-
     }
 
 
@@ -163,8 +167,6 @@ public class UserFragment extends Fragment {
 
     public String[] getGdtmId() {
         Intent intent = getActivity().getIntent();
-
-        int length = intent.getIntExtra("number", 0);
         String[] gdtmid = intent.getStringArrayExtra("gdtm_id");
         return gdtmid;
     }

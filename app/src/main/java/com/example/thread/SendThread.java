@@ -31,10 +31,13 @@ public class SendThread extends Thread {
     public void run() {
 
         try {
-            socket = Connect.getSocket();
-            BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
-            bw.write(message);
-            bw.flush();    //刷新缓冲区
+               synchronized(SendThread.class){
+                socket = Connect.getSocket();
+                BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
+                bw.write(message);
+                bw.flush();    //刷新缓冲区
+               }
+
         } catch (IOException e) {
             e.printStackTrace();
         }
