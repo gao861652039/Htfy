@@ -109,7 +109,7 @@ public class InfoFragment extends Fragment {
             ArrayList<String> ph = getArguments().getStringArrayList("ph");
             float[] p = new float[ph.size()];
             for (int i = 0; i < ph.size(); i++) {
-                p[i] = (Float.parseFloat(ph.get(i))) / (float) 100;
+                p[i] = (Float.parseFloat(ph.get(i))) / (float) 10;
             }
             return p;
     }
