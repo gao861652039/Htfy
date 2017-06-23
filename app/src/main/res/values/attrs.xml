@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="BottomTabBar">
+        <attr name="textColor" format="color"/>
+        <attr name="backgroundColor" format="color"/>
+        <attr name="textSelectColor" format="color"/>
+    </declare-styleable>
+    <declare-styleable name="MonthView">
+        <attr name="dayCircleRadius" format="dimension" />
+        <attr name="selectDayCircleBgColor" format="color" />
+        <attr name="dayTextColor" format="color"/>
+        <attr name="dayTextSize" format="dimension"/>
+        <attr name="dayRowHeight" format="dimension" />
+        <attr name="monthTitleColor" format="color" />
+        <attr name="monthTextSize" format="dimension" />
+        <attr name="monthHeaderHeight" format="dimension" />
+        <attr name="weekLabelTextColor" format="color" />
+        <attr name="weekLabelTextSize" format="dimension" />
+        <attr name="showWeekLabel" format="boolean"/>
+        <attr name="showWeekDivider" format="boolean"/>
+        <attr name="showMonthTitle" format="boolean"/>
+    </declare-styleable>
+</resources>

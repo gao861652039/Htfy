@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/bg_color"
+    android:orientation="vertical">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+        <Button
+            android:id="@+id/selectType"
+            style="@style/common_button_style"
+            android:layout_marginLeft="@dimen/activity_horizontal_margin"
+            android:layout_marginRight="@dimen/activity_horizontal_margin"
+            android:layout_marginTop="@dimen/activity_vertical_margin"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="图表类型选择"
+            />
+        <TextView
+            android:id="@+id/currentMsg"
+            android:layout_marginLeft="@dimen/activity_horizontal_margin"
+            android:layout_marginRight="@dimen/activity_horizontal_margin"
+            android:layout_marginTop="@dimen/activity_vertical_margin"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="20dp"
+            />
+
+    </LinearLayout>
+
+    <tech.linjiang.suitlines.SuitLines
+        xmlns:line="http://schemas.android.com/apk/res-auto"
+        android:layout_gravity="center_horizontal"
+        android:id="@+id/suitlines"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        line:xySize="14"
+        line:xyColor="@color/colorAccent"
+        line:needEdgeEffect="true"
+        line:colorEdgeEffect="@color/colorPrimaryDark"
+        line:needClickHint="true"
+        line:colorHint="@color/colorPrimary"
+        line:maxOfVisible="30"
+        line:countOfY="15"
+        />
+
+</LinearLayout>

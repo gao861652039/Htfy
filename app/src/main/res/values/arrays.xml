@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="alarm">
+        <item>显示全部</item>
+        <item>设备一般警告</item>
+        <item>设备严重警告</item>
+        <item>设备严重错误</item>
+    </string-array>
+    <string-array name="datatype">
+        <item>PH</item>
+        <item>ORP</item>
+        <item>有效氯</item>
+        <item>电流</item>
+    </string-array>
+</resources>
