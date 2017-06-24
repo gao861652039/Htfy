@@ -40,18 +40,20 @@ public class ReceiveWorkMessage extends  Thread {
             while((len = br.read(buf))!=-1){
                 line = new String(buf,0,len);
                 Message msg =new Message();
-                if("#E".equals(line)){
-                    msg.what = 2;
-                    handler.sendMessage(msg);
-                    break;
+                System.out.println("line:"+line);
+                if(line.contains("#E")){
+                    throw new IOException();
                 }
                 msg.what = 1;
                 msg.obj = line;
                 handler.sendMessage(msg);
             }
-            System.out.println("没有更多数据接收，线程退出");
+
         } catch (IOException e) {
-            e.printStackTrace();
+            System.out.println("没有更多数据接收，线程退出");
+            Message msg =new Message();
+            msg.what = 2;
+            handler.sendMessage(msg);
         }
 
     }

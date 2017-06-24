@@ -25,6 +25,7 @@ import com.example.adapter.UserAdapter;
 import com.example.tab.BottomTabBar;
 import com.example.tab.Connect;
 import com.example.tab.UserInfo;
+import com.example.thread.GdtmExitThread;
 import com.example.thread.ReceiveGetUserInfo;
 import com.example.thread.SendThread;
 
@@ -39,14 +40,13 @@ import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
 
+import me.drakeet.materialdialog.MaterialDialog;
 
 
 /**
  * Created by gaofeng on 2017/2/11.
  */
 public class UserFragment extends Fragment {
-    private BottomTabBar tb;
-    private SendThread st;
     private ProgressDialog progressDialog;
     private ArrayList<String> macNum = new ArrayList<>();
     private ArrayList<String> userInfo = new ArrayList<>();
@@ -61,50 +61,78 @@ public class UserFragment extends Fragment {
               switch (msg.what){
                   case 1:
                       String str = (String)msg.obj;
-//                      System.out.println("str:"+str);
+                      System.out.println("str:"+str);
                       userInfo.add(str);
                       break;
                   case 2:
                       System.out.println("进入case2");
-                      for(int i=0;i<macNum.size();i++){
-                          String[] user = userInfo.get(i).split("\\|");
-                          String  macRoom = macNum.get(i);
-                          String  userName = user[0].split("\\$")[1];
-                          String  roomAddress = user[1];
-                          String  userAddress = user[2];
-                          String  time = user[3];
-                        list.add(new UserInfo(macRoom,userName,roomAddress,userAddress,time,View.VISIBLE));
-                      }
-
-                      adapter = new UserAdapter(list);
-                      recyclerView.setAdapter(adapter);
-                      adapter.setOnItemClickListener(new UserAdapter.onRecyclerViewItemClickListener(){
-
-                          @Override
-                          public void onItemClick(View v, String tag) {
-                              TextView textView = (TextView) v.findViewById(R.id.machineNumber);
-                              String res[] = textView.getText().toString().split(":");
-                              message = res[1];
-                              if(MainActivity.deviceFragment == null) {
-                                  MainActivity.deviceFragment = new DeviceFragment();
-                              }else{
-                                  FragmentManager fm = getFragmentManager();
-                                  fm.beginTransaction().remove(MainActivity.deviceFragment).commit();
-
-                                  new SendThread("CZ").start();
-                                  MainActivity.deviceFragment = new DeviceFragment();
-
-                              }
-                              new SendThread("C9"+message).start();
-                              Bundle bundle = new Bundle();
-                              bundle.putString("gdtm_id",message);
-                              MainActivity.deviceFragment.setArguments(bundle);
-                              tb.switchContent(MainActivity.deviceFragment);
-
+                      try {
+                          for (int i = 0; i < macNum.size(); i++) {
+                              String[] user = userInfo.get(i).split("\\|");
+                              String macRoom = macNum.get(i);
+                              String userName = user[0].split("\\$")[1];
+                              String roomAddress = user[1];
+                              String userAddress = user[2];
+                              String time = user[3];
+                              list.add(new UserInfo(macRoom, userName, roomAddress, userAddress, time, View.VISIBLE));
                           }
-                      });
-                      progressDialog.dismiss();
+                      }catch (Exception e){
+                          if(userInfo.size()!=0){
+                              userInfo.clear();
+                              sendRequest();
+                          }else{
+                              progressDialog.dismiss();
+                              dialog();
+                          }
+                      }finally {
+                          adapter = new UserAdapter(list);
+                          recyclerView.setAdapter(adapter);
+                          adapter.setOnItemClickListener(new UserAdapter.onRecyclerViewItemClickListener() {
 
+                              @Override
+                              public void onItemClick(View v, String tag) {
+                                  TextView textView = (TextView) v.findViewById(R.id.machineNumber);
+                                  String res[] = textView.getText().toString().split(":");
+                                  message = res[1];
+                                  if (MainActivity.deviceFragment == null) {
+                                      if(MainActivity.infoFragment!=null){
+//                                          MainActivity.manager.beginTransaction().remove(MainActivity.infoFragment)
+//                                                  .hide(MainActivity.infoFragment)
+//                                                  .commit();
+                                          MainActivity.infoFragment = null;
+                                      }
+                                      MainActivity.deviceFragment = new DeviceFragment();
+                                      Bundle bundle = new Bundle();
+                                      bundle.putString("gdtm_id", message);
+                                      MainActivity.deviceFragment.setArguments(bundle);
+                                      MainActivity.tb.switchContent(MainActivity.deviceFragment);
+                                  } else {
+                                      if(MainActivity.infoFragment!=null){
+//                                          MainActivity.manager.beginTransaction().remove(MainActivity.infoFragment)
+//                                                  .hide(MainActivity.infoFragment)
+//                                                  .commit();
+                                          MainActivity.infoFragment = null;
+                                      }
+                                      new GdtmExitThread(handler).start();
+                                      MainActivity.manager.beginTransaction().remove(MainActivity.deviceFragment)
+                                              .hide(MainActivity.deviceFragment)
+                                              .commit();
+
+                                      new SendThread("CZ").start();
+
+                                  }
+                              }
+                          });
+                          progressDialog.dismiss();
+                      }
+                      break;
+                  case 3:
+
+                              MainActivity.deviceFragment = new DeviceFragment();
+                              Bundle bundle = new Bundle();
+                              bundle.putString("gdtm_id", message);
+                              MainActivity.deviceFragment.setArguments(bundle);
+                              MainActivity.tb.switchContent(MainActivity.deviceFragment);
                       break;
 
               }
@@ -126,23 +154,13 @@ public class UserFragment extends Fragment {
         rgu.start();
         progressDialog = new ProgressDialog(getActivity());
         progressDialog.setMessage("正在加载数据");
+        progressDialog.setCanceledOnTouchOutside(false);
         progressDialog.show();
         gdtm_id = getGdtmId();
-        tb = (BottomTabBar) getActivity().findViewById(R.id.tb);
         recyclerView = (RecyclerView) getActivity().findViewById(R.id.cardLayout);
         GridLayoutManager layoutManager = new GridLayoutManager(getActivity(), 1);
         recyclerView.setLayoutManager(layoutManager);
-
-        for(int i=0;i<gdtm_id.length;i++){
-
-             new SendThread("CB"+gdtm_id[i]).start();
-            try {
-                Thread.sleep(10);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-            macNum.add(gdtm_id[i]);
-        }
+        sendRequest();
     }
 
 
@@ -164,14 +182,61 @@ public class UserFragment extends Fragment {
         super.onPause();
 
     }
-
-    public String[] getGdtmId() {
-        Intent intent = getActivity().getIntent();
-        String[] gdtmid = intent.getStringArrayExtra("gdtm_id");
-        return gdtmid;
+    public void dialog(){
+        final MaterialDialog mMaterialDialog = new MaterialDialog(getActivity());
+        mMaterialDialog.setTitle("警告")
+                .setMessage("无法获取机房信息")
+                .setPositiveButton("确定", new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        mMaterialDialog.dismiss();
+                        FragmentManager fm = getFragmentManager();
+                        fm.beginTransaction().remove(MainActivity.deviceFragment).commit();
+                        new SendThread("CQ").start();
+                        System.exit(0);
+                    }
+                })
+                .setNegativeButton("取消", new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        mMaterialDialog.dismiss();
+                        FragmentManager fm = getFragmentManager();
+                        fm.beginTransaction().remove(MainActivity.deviceFragment).commit();
+                        new SendThread("CQ").start();
+                        System.exit(0);
+                    }
+                });
+        mMaterialDialog.show();
     }
 
+    public String[] getGdtmId() {
+        try {
+            Intent intent = getActivity().getIntent();
+            String[] gdtmid = intent.getStringArrayExtra("gdtm_id");
+            return gdtmid;
+        }catch (Exception e){
 
+            dialog();
+        }
+        return null;
+    }
+
+     public void sendRequest(){
+         if(macNum.size()!=0){
+             macNum.clear();
+         }
+         for(int i=0;i<gdtm_id.length;i++){
+
+             new SendThread("CB"+gdtm_id[i]).start();
+             try {
+                 Thread.sleep(10);
+             } catch (InterruptedException e) {
+                 e.printStackTrace();
+             }
+             macNum.add(gdtm_id[i]);
+         }
+
+     }
 
 
 

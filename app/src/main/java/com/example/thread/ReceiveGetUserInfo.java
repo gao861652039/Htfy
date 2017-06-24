@@ -32,7 +32,7 @@ public class ReceiveGetUserInfo extends Thread {
         try {
             socket = Connect.getSocket();
             InputStream is = socket.getInputStream();
-            socket.setSoTimeout(2000);
+            socket.setSoTimeout(3000);
             int len = 0;
 
             byte[] b = new byte[1024];
@@ -46,6 +46,7 @@ public class ReceiveGetUserInfo extends Thread {
                       msg.obj = data;
                       handler.sendMessage(msg);
                       data = "";
+                      //throw new IOException();
                   }
               }
         } catch (IOException e) {

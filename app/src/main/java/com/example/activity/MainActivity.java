@@ -19,12 +19,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MainActivity extends FragmentActivity implements BottomTabBar.OnSelectListener {
-    private BottomTabBar tb;
-    private List<BarEntity> bars;
+    public static BottomTabBar tb;
+    public static  List<BarEntity> bars;
     public static UserFragment userFragment;
     public static DeviceFragment deviceFragment;
     private SettingFragment settingFragment;
-    private FragmentManager manager;
+    public static FragmentManager manager;
     public static InfoFragment infoFragment;
 
     @Override
