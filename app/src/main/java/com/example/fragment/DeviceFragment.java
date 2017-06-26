@@ -412,7 +412,6 @@ public class DeviceFragment extends Fragment {
                         public void onClick(View v) {
                             Message message = new Message();
                             if (id == bt.getId()) {
-                                System.out.println("bt:");
                                 if (date == null) {
                                     date_start = calendar.getThisday();
                                     bt.setText("起始日期\n"+beginFormat(date_start));
@@ -423,7 +422,6 @@ public class DeviceFragment extends Fragment {
 
                             }
                             if (id == bt2.getId()) {
-                                System.out.println("bt2:");
                                 if (date == null) {
                                     date_end = calendar.getThisday();
                                     bt2.setText("结束日期\n"+endFormat(date_end));
