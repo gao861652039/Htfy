@@ -29,6 +29,7 @@ import com.example.entity.DeviceInfo;
 import com.example.tab.KCalendar;
 import com.example.thread.ReceiveWorkMessage;
 import com.example.thread.SendThread;
+import com.example.utils.MachineUtils;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -38,6 +39,19 @@ import java.util.Date;
 import java.util.List;
 
 import me.drakeet.materialdialog.MaterialDialog;
+
+import static com.example.utils.MachineUtils.getAlarmCode;
+import static com.example.utils.MachineUtils.getSxAlarmType;
+import static com.example.utils.MachineUtils.getZsjError;
+import static com.example.utils.TimeUtils.beginFormat;
+import static com.example.utils.TimeUtils.disContent;
+import static com.example.utils.TimeUtils.endFormat;
+import static com.example.utils.TimeUtils.getBeforeForm;
+import static com.example.utils.TimeUtils.getBeforeMonth;
+import static com.example.utils.TimeUtils.getPresentMonth;
+import static com.example.utils.TimeUtils.sameDate;
+import static com.example.utils.TimeUtils.transform;
+import static com.example.utils.TimeUtils.transform2;
 
 /**
  * Created by gaofeng on 2017/2/11.
@@ -60,7 +74,6 @@ public class DeviceFragment extends Fragment {
     private Button bt;
     private Button bt2;
     private RecyclerView recyclerView;
-    private String gdtmId = null;
     private Handler handler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
@@ -110,26 +123,10 @@ public class DeviceFragment extends Fragment {
                         String time = arr[0];
                         String deviceId = arr[1];
                         String alarmInfo = arr[2];
-                        Date subTime = transform(time.substring(0, 8));
+                        Date subTime = transform(time);
 
                         if ((subTime.before(date_end) && subTime.after(date_start)) || sameDate(subTime, date_start) || sameDate(subTime, date_end)) {
-
-                            if ("C2".equals(alarmInfo)) {
-                                ph.add(arr[3]);
-                                orp.add(arr[4]);
-                                yxl.add(arr[5]);
-                                current.add(arr[6]);
-                                deviceInfos.add(new DeviceInfo(disContent(time),getAlarmCode(alarmInfo),"其他信息"));
-                            } else {
-                                if ("CE".equals(alarmInfo)) {
-                                    deviceInfos.add(new DeviceInfo(disContent(time), getZsjError(arr[3]),"其他信息"));
-                                } else if ("CT".equals(alarmInfo)) {
-                                    deviceInfos.add(new DeviceInfo(disContent(time), getSxAlarmType(arr[3]),"其他信息"));
-                                } else {
-                                    deviceInfos.add(new DeviceInfo(disContent(time), getAlarmCode(alarmInfo),"其他信息"));
-                                }
-
-                            }
+                                    handleOrder(time,deviceId,alarmInfo);
                         }
                     }
                     deviceAdapter = new DeviceAdapter(deviceInfos);
@@ -148,7 +145,7 @@ public class DeviceFragment extends Fragment {
                         String time = arr[0];
                         String deviceId = arr[1];
                         String alarmInfo = arr[2];
-                        Date subTime = transform(time.substring(0, 8));
+                        Date subTime = transform(time);
                         if ((subTime.before(date_end) && subTime.after(date_start)) || sameDate(subTime, date_start) || sameDate(subTime, date_end)) {
                             if ("C2".equals(alarmInfo)) {
                                 ph.add(arr[3]);
@@ -228,32 +225,7 @@ public class DeviceFragment extends Fragment {
 
     }
 
-    @Override
-    public void onResume() {
-        super.onResume();
-        System.out.println("onResume");
-    }
-
-
-
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-        System.out.println("onAttach");
-
-    }
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-    }
-
-    @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        System.out.println("onCreate");
-    }
-
+   //得到机房Id
     public String getGdtmId() {
         String gdtm = null;
         try {
@@ -268,7 +240,7 @@ public class DeviceFragment extends Fragment {
         return gdtm;
     }
 
-
+   //没有机房信息时显示弹窗
     public void dialog() {
         final MaterialDialog mMaterialDialog = new MaterialDialog(getActivity());
         mMaterialDialog.setTitle("警告")
@@ -293,29 +265,39 @@ public class DeviceFragment extends Fragment {
         mMaterialDialog.show();
     }
 
-    public void dialog2() {
-        final MaterialDialog mMaterialDialog = new MaterialDialog(getActivity());
-        mMaterialDialog.setTitle("警告")
-                .setMessage("机房不存在")
-                .setPositiveButton("确定", new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        mMaterialDialog.dismiss();
-                        MainActivity.manager.beginTransaction().remove(MainActivity.deviceFragment).commit();
-                        MainActivity.tb.switchContent(MainActivity.userFragment);
-                    }
-                })
-                .setNegativeButton("取消", new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        mMaterialDialog.dismiss();
-                        MainActivity.manager.beginTransaction().remove(MainActivity.deviceFragment).commit();
-                        MainActivity.tb.switchContent(MainActivity.userFragment);
+    //处理命令类型
+    public void handleOrder(String time,String deviceId,String alarmCode){
+        switch (alarmCode){
+            case "C6":
+                //系统启动
+                deviceInfos.add(new DeviceInfo(time,"系统信息:"+ MachineUtils.getAlarmCode(alarmCode),"其他信息"));
+                break;
+            case "C0":
+                deviceInfos.add(new DeviceInfo(time,"系统信息:"+ MachineUtils.getAlarmCode(alarmCode),"其他信息"));
+                //开始制水
+                break;
+            case "C1":
+                deviceInfos.add(new DeviceInfo(time,"系统信息:"+ MachineUtils.getAlarmCode(alarmCode),"其他信息"));
+                //停止制水
+                break;
+            case "C2":
+                deviceInfos.add(new DeviceInfo(time,"系统信息:"+ MachineUtils.getAlarmCode(alarmCode),"其他信息"));
+                //上传制水数据
+                break;
+            case "CE":
+                //制水机报警
+                deviceInfos.add(new DeviceInfo(time,"系统信息:"+ MachineUtils.getAlarmCode(alarmCode),"其他信息"));
+                break;
+            case "CT":
+                deviceInfos.add(new DeviceInfo(time,MachineUtils.getAlarmCode(alarmCode),"其他信息"));
+                //水箱组报警
+                break;
+            default:
+                break;
+        }
 
-                    }
-                });
-        mMaterialDialog.show();
     }
+
 
 
     public class PopupWindows extends PopupWindow {
@@ -460,200 +442,6 @@ public class DeviceFragment extends Fragment {
                     });
         }
     }
-
-
-
-    public Date getBeforeMonth() {
-
-        Calendar calendar = Calendar.getInstance();
-        calendar.add(Calendar.MONTH, -1);    //得到前一个月
-        return calendar.getTime();
-
-    }
-
-    public Date getPresentMonth() {
-
-        Calendar calendar = Calendar.getInstance();
-        return calendar.getTime();
-
-    }
-
-
-
-    //得到制水机以外的设备名
-    public String getDeviceName(String name) {
-        if (!"".equals(name) && name != null) {
-            switch (name) {
-                case "0":
-                    return "原水箱";
-                case "1":
-                    return "纯水箱";
-                case "2":
-                    return "酸水箱";
-                case "3":
-                    return "碱水箱";
-                case "4":
-                    return "盐水箱";
-                case "5":
-                    return "搅拌箱";
-                case "SYS":
-                    return "系统设备";
-            }
-
-
-        }
-        return null;
-    }
-
-    //得到外围错误
-    public String getAlarmCode(String alarm_code) {
-
-        if (!"".equals(alarm_code) || alarm_code != null) {
-            switch (alarm_code) {
-                case "C0":
-                    return "开始制水";
-                case "C1":
-                    return "停止制水";
-                case "C2":
-                    return "上传制水数据";
-                case "CE":
-                    return "制水机组报警";
-                case "CT":
-                    return "水箱组报警";
-                case "C6":
-                    return "系统启动";
-               default:
-                   return null;
-            }
-
-        }
-        return null;
-    }
-
-    //得到制水机错误类型
-    public String getZsjError(String error) {
-        String str = Integer.toHexString(Integer.parseInt(error));
-        switch (str) {
-            case "ff":
-                return "离线";
-            case "40":
-                return "过流保护";
-            case "20":
-                return "高水压保护";
-            case "10":
-                return "低水压保护";
-            case "4":
-                return "电解槽耗尽";
-            default:
-                return null;
-        }
-    }
-
-    //得到水箱报警类型
-    public String getSxAlarmType(String alarm) {
-        String str = Integer.toHexString(Integer.parseInt(alarm));
-        switch (str) {
-            case "ff":
-                return "信号错误";
-            case "0":
-                return "低水位报警";
-            default:
-                return null;
-        }
-    }
-    //得到水箱故障
-    public String getSxError(String error){
-        switch (error){
-            case "ZZ":
-                return "未设置传感器";
-            case "FF":
-                return "信号故障";
-            case "00":
-                return "低水位报警";
-            default:
-                return null;
-        }
-    }
-
-
-      //按yyyyMMdd格式输出日期
-    public Date transform(String s) {
-        Date d = null;
-
-        try {
-            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyyMMdd");
-            d = simpleDateFormat.parse(s);
-            return d;
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-        return d;
-    }
-    //按yyyy-MM-dd格式输出日期
-    public Date transform2(String s) {
-        Date d = null;
-
-        try {
-            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
-            d = simpleDateFormat.parse(s);
-            return d;
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-        return d;
-    }
-
-    public String getBeforeForm() {
-        Date d = getBeforeMonth();
-        String str = null;
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyyMMdd");
-        str = simpleDateFormat.format(d);
-        return str;
-
-
-    }
-
-
-    public static boolean sameDate(Date d1, Date d2) {
-        SimpleDateFormat fmt = new SimpleDateFormat("yyyyMMdd");
-        //fmt.setTimeZone(new TimeZone()); // 如果需要设置时间区域，可以在这里设置
-        return fmt.format(d1).equals(fmt.format(d2));
-    }
-
-     //转换起始日期格式
-     public String beginFormat(Date bTime){
-
-         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy年MM月dd日HH点");
-         String str = simpleDateFormat.format(bTime);
-         return  str;
-     }
-
-
-    //转换结束日期格式
-    public String  endFormat(Date eTime){
-
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy年MM月dd日");
-        String str = simpleDateFormat.format(eTime);
-        return  str+"24点";
-
-    }
-    //显示内容日期格式
-    public String disContent(String s){
-
-        try {
-            SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmm");
-            Date d = sdf.parse(s);
-            SimpleDateFormat sdf2 = new SimpleDateFormat("yyyy年MM月dd日HH:mm");
-            String str = sdf2.format(d);
-            System.out.println("str:"+str);
-            return str;
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
-
-
 
 
 }
