@@ -75,21 +75,10 @@ public class MachineUtils {
         }
     }
 
-    //得到水箱报警类型
-    public static String getSxAlarmType(String alarm) {
-        String str = Integer.toHexString(Integer.parseInt(alarm));
-        switch (str) {
-            case "ff":
-                return "信号错误";
-            case "0":
-                return "低水位报警";
-            default:
-                return null;
-        }
-    }
     //得到水箱故障
     public static String getSxError(String error){
-        switch (error){
+        String str = Integer.toHexString(Integer.parseInt(error));
+        switch (str){
             case "ZZ":
                 return "未设置传感器";
             case "FF":
@@ -101,5 +90,38 @@ public class MachineUtils {
         }
     }
 
-
+    //水箱信息类型
+    public static String sxMsgType(String code){
+        switch (code){
+            case "Z":
+                return "离线 ";
+            case "3":
+                return "高水位 ";
+            case "2":
+                return "中水位 ";
+            case "1":
+                return "低水位 ";
+            default:
+                return null;
+        }
+    }
+    //水箱ID
+    public static String sxId(String sxId){
+        switch (sxId){
+            case "0":
+                return "原水箱";
+            case "1":
+                return "纯水箱";
+            case "2":
+                return "酸水箱";
+            case "3":
+                return "碱水箱";
+            case "4":
+                return "盐水箱";
+            case "5":
+                return "搅拌箱";
+            default:
+                return null;
+        }
+    }
 }

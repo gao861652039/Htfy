@@ -21,30 +21,26 @@ import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-
 import com.example.activity.MainActivity;
 import com.example.activity.R;
 import com.example.adapter.DeviceAdapter;
+import com.example.entity.DataInfo;
 import com.example.entity.DeviceInfo;
 import com.example.tab.KCalendar;
 import com.example.thread.ReceiveWorkMessage;
 import com.example.thread.SendThread;
 import com.example.utils.MachineUtils;
+import com.example.utils.TimeUtils;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
+import java.sql.Time;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
-
 import me.drakeet.materialdialog.MaterialDialog;
-
 import static com.example.utils.MachineUtils.getAlarmCode;
-import static com.example.utils.MachineUtils.getSxAlarmType;
-import static com.example.utils.MachineUtils.getZsjError;
+import static com.example.utils.MachineUtils.sxId;
+import static com.example.utils.MachineUtils.sxMsgType;
 import static com.example.utils.TimeUtils.beginFormat;
-import static com.example.utils.TimeUtils.disContent;
 import static com.example.utils.TimeUtils.endFormat;
 import static com.example.utils.TimeUtils.getBeforeForm;
 import static com.example.utils.TimeUtils.getBeforeMonth;
@@ -58,10 +54,6 @@ import static com.example.utils.TimeUtils.transform2;
  */
 public class DeviceFragment extends Fragment {
     private ReceiveWorkMessage rwm;
-    private ArrayList<String> ph = new ArrayList<>();
-    private ArrayList<String> orp = new ArrayList<>();
-    private ArrayList<String> yxl = new ArrayList<>();
-    private ArrayList<String> current = new ArrayList<>();
     private List<DeviceInfo> deviceInfos = new ArrayList<>();
     private DeviceAdapter deviceAdapter;
     private ProgressDialog progressDialog = null;
@@ -114,10 +106,6 @@ public class DeviceFragment extends Fragment {
                         System.out.println(list.get(i));
                     }
                     deviceInfos.clear();
-                    ph.clear();
-                    orp.clear();
-                    yxl.clear();
-                    current.clear();
                     for (int i = 0; i < list.size(); i++) {
                         String[] arr = list.get(i).split("\\|");
                         String time = arr[0];
@@ -126,7 +114,21 @@ public class DeviceFragment extends Fragment {
                         Date subTime = transform(time);
 
                         if ((subTime.before(date_end) && subTime.after(date_start)) || sameDate(subTime, date_start) || sameDate(subTime, date_end)) {
-                                    handleOrder(time,deviceId,alarmInfo);
+                            if("C0".equals(alarmInfo) || "C6".equals(alarmInfo) ||"C1".equals(alarmInfo)){
+                                String sxMsg = arr[9];
+                                handleSxMessage(time,alarmInfo,sxMsg);
+                            }else if("CE".equals(alarmInfo) || "CT".equals(alarmInfo)){
+                                String param = arr[3];
+                                handleAlarmInfo(time,alarmInfo,deviceId,param);
+                            }else{
+                                String ph  = arr[3];
+                                String orp = arr[4];
+                                String yxl = arr[5];
+                                String dl  = arr[6];
+                                String djc = arr[7];
+                                String yb  = arr[8];
+                                handleUpLoadMsg(time,alarmInfo,new DataInfo(ph,orp,yxl,dl,djc,yb));
+                            }
                         }
                     }
                     deviceAdapter = new DeviceAdapter(deviceInfos);
@@ -136,10 +138,6 @@ public class DeviceFragment extends Fragment {
                     break;
                 case 3:
                     deviceInfos.clear();
-                    ph.clear();
-                    orp.clear();
-                    yxl.clear();
-                    current.clear();
                     for (int i = 0; i < list.size(); i++) {
                         String[] arr = list.get(i).split("\\|");
                         String time = arr[0];
@@ -147,22 +145,21 @@ public class DeviceFragment extends Fragment {
                         String alarmInfo = arr[2];
                         Date subTime = transform(time);
                         if ((subTime.before(date_end) && subTime.after(date_start)) || sameDate(subTime, date_start) || sameDate(subTime, date_end)) {
-                            if ("C2".equals(alarmInfo)) {
-                                ph.add(arr[3]);
-                                orp.add(arr[4]);
-                                yxl.add(arr[5]);
-                                current.add(arr[6]);
-                                deviceInfos.add(new DeviceInfo( disContent(time), getAlarmCode(alarmInfo),"其他信息"));
-                            } else {
-                                if ("CE".equals(alarmInfo)) {
-                                    deviceInfos.add(new DeviceInfo(disContent(time), getZsjError(arr[3]),"其他信息"));
-                                } else if ("CT".equals(alarmInfo)) {
-                                    deviceInfos.add(new DeviceInfo(disContent(time), getSxAlarmType(arr[3]),"其他信息"));
-                                } else {
-                                    deviceInfos.add(new DeviceInfo(disContent(time), getAlarmCode(alarmInfo),"其他信息"));
-                                }
-
-                            }
+                                      if("C0".equals(alarmInfo) || "C6".equals(alarmInfo) ||"C1".equals(alarmInfo)){
+                                          String sxMsg = arr[9];
+                                          handleSxMessage(time,alarmInfo,sxMsg);
+                                      }else if("CE".equals(alarmInfo) || "CT".equals(alarmInfo)){
+                                          String param = arr[3];
+                                          handleAlarmInfo(time,alarmInfo,deviceId,param);
+                                      }else{
+                                          String ph  = arr[3];
+                                          String orp = arr[4];
+                                          String yxl = arr[5];
+                                          String dl  = arr[6];
+                                          String djc = arr[7];
+                                          String yb  = arr[8];
+                                          handleUpLoadMsg(time,alarmInfo,new DataInfo(ph,orp,yxl,dl,djc,yb));
+                                      }
                         }
                     }
                     deviceAdapter = new DeviceAdapter(deviceInfos);
@@ -222,9 +219,7 @@ public class DeviceFragment extends Fragment {
         recyclerView = (RecyclerView) getActivity().findViewById(R.id.cardLayout2);
         GridLayoutManager layoutManager = new GridLayoutManager(getActivity(), 1);
         recyclerView.setLayoutManager(layoutManager);
-
     }
-
    //得到机房Id
     public String getGdtmId() {
         String gdtm = null;
@@ -265,40 +260,63 @@ public class DeviceFragment extends Fragment {
         mMaterialDialog.show();
     }
 
-    //处理命令类型
-    public void handleOrder(String time,String deviceId,String alarmCode){
-        switch (alarmCode){
-            case "C6":
-                //系统启动
-                deviceInfos.add(new DeviceInfo(time,"系统信息:"+ MachineUtils.getAlarmCode(alarmCode),"其他信息"));
-                break;
-            case "C0":
-                deviceInfos.add(new DeviceInfo(time,"系统信息:"+ MachineUtils.getAlarmCode(alarmCode),"其他信息"));
-                //开始制水
-                break;
-            case "C1":
-                deviceInfos.add(new DeviceInfo(time,"系统信息:"+ MachineUtils.getAlarmCode(alarmCode),"其他信息"));
-                //停止制水
-                break;
-            case "C2":
-                deviceInfos.add(new DeviceInfo(time,"系统信息:"+ MachineUtils.getAlarmCode(alarmCode),"其他信息"));
-                //上传制水数据
-                break;
-            case "CE":
-                //制水机报警
-                deviceInfos.add(new DeviceInfo(time,"系统信息:"+ MachineUtils.getAlarmCode(alarmCode),"其他信息"));
-                break;
-            case "CT":
-                deviceInfos.add(new DeviceInfo(time,MachineUtils.getAlarmCode(alarmCode),"其他信息"));
-                //水箱组报警
-                break;
-            default:
-                break;
+    //处理水箱信息
+    public void handleSxMessage(String time,String alarmInfo,String sx){
+        //水箱顺序
+        //原水箱，纯水箱，酸水箱，碱水箱，盐水箱，搅拌箱
+        //Z：离线，3：高水位，2：中水位，1：低水位
+        if((!"".equals(sx)) && sx!=null ){
+            String ysx  =  sx.substring(0,1);
+            String csx  =  sx.substring(1,2);
+            String ssx  =  sx.substring(2,3);
+            String jsx  =  sx.substring(3,4);
+            String yansx  =  sx.substring(4,5);
+            String jbx  =  sx.substring(5,6);
+
+            deviceInfos.add(new DeviceInfo(TimeUtils.disContent(time),"系统信息:"+ MachineUtils.getAlarmCode(alarmInfo),
+                            "原水箱:"+sxMsgType(ysx)+
+                            "纯水箱:"+sxMsgType(csx)+
+                            "酸水箱:"+sxMsgType(ssx)+"\n"+
+                            "碱水箱:"+sxMsgType(jsx)+
+                            "盐水箱:"+sxMsgType(yansx)+
+                            "搅拌箱:"+sxMsgType(jbx)));
         }
+
+
+
+
 
     }
 
+    //处理报警和故障信息
+    public void handleAlarmInfo(String time,String alarmInfo,String deviceId,String param){
+          if((!"".equals(param))&& param!=null){
+              if("CE".equals(alarmInfo)){
+                    deviceInfos.add(new DeviceInfo(TimeUtils.disContent(time),getAlarmCode(alarmInfo),
+                             deviceId+"号机"+MachineUtils.getZsjError(param)));
+              }else{
+                    deviceInfos.add(new DeviceInfo(TimeUtils.disContent(time),getAlarmCode(alarmInfo),
+                             sxId(deviceId)+MachineUtils.getSxError(param)));
+              }
+          }
 
+    }
+    //处理上传数据信息
+    public void handleUpLoadMsg(String time,String alarmInfo,DataInfo dataInfo){
+
+        if(dataInfo!=null){
+         deviceInfos.add(new DeviceInfo(TimeUtils.disContent(time),getAlarmCode(alarmInfo),
+                 "[PH:"+handlePH(dataInfo.getPh())+"]"+
+                 "[ORP:"+dataInfo.getOrp()+"mv]"+
+                 "[有效氯:"+dataInfo.getYxl()+"mg/L]"+
+                 "[电流:"+dataInfo.getDl()+"A]"));
+        }
+    }
+
+    public String handlePH(String ph){
+        float a  = (Integer.parseInt(ph))/10;
+        return  String.valueOf(a);
+    }
 
     public class PopupWindows extends PopupWindow {
 
