@@ -9,7 +9,6 @@ import android.os.Handler;
 import android.os.Message;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.Gravity;
@@ -26,14 +25,11 @@ import android.widget.TextView;
 import com.example.activity.MainActivity;
 import com.example.activity.R;
 import com.example.adapter.DeviceAdapter;
-import com.example.tab.BottomTabBar;
-import com.example.tab.DeviceInfo;
+import com.example.entity.DeviceInfo;
 import com.example.tab.KCalendar;
 import com.example.thread.ReceiveWorkMessage;
 import com.example.thread.SendThread;
-import com.mylhyl.superdialog.SuperDialog;
 
-import java.sql.SQLOutput;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -123,80 +119,25 @@ public class DeviceFragment extends Fragment {
                                 orp.add(arr[4]);
                                 yxl.add(arr[5]);
                                 current.add(arr[6]);
-                                deviceInfos.add(new DeviceInfo("制水机", deviceId, time, getAlarmCode(alarmInfo)));
+                                deviceInfos.add(new DeviceInfo(disContent(time),getAlarmCode(alarmInfo),"其他信息"));
                             } else {
                                 if ("CE".equals(alarmInfo)) {
-                                    deviceInfos.add(new DeviceInfo(getDeviceName(deviceId), deviceId, time, getZsjError(arr[3])));
+                                    deviceInfos.add(new DeviceInfo(disContent(time), getZsjError(arr[3]),"其他信息"));
                                 } else if ("CT".equals(alarmInfo)) {
-                                    deviceInfos.add(new DeviceInfo(getDeviceName(deviceId), deviceId, time, getSxAlarmType(arr[3])));
+                                    deviceInfos.add(new DeviceInfo(disContent(time), getSxAlarmType(arr[3]),"其他信息"));
                                 } else {
-                                    deviceInfos.add(new DeviceInfo(getDeviceName(deviceId), deviceId, time, getAlarmCode(alarmInfo)));
+                                    deviceInfos.add(new DeviceInfo(disContent(time), getAlarmCode(alarmInfo),"其他信息"));
                                 }
 
                             }
                         }
                     }
-
                     deviceAdapter = new DeviceAdapter(deviceInfos);
-                    deviceAdapter.setOnItemClickListener(new DeviceAdapter.onRecyclerViewItemClickListener() {
-                        @Override
-                        public void onItemClick(View v, String tag) {
-
-                            TextView textView1 = (TextView) v.findViewById(R.id.device_id);
-                            TextView textView2 = (TextView) v.findViewById(R.id.time);
-                            TextView textView3 = (TextView) v.findViewById(R.id.alarm_info);
-                            String deviceName = textView1.getText().toString();
-                            String time = textView2.getText().toString();
-                            String alarmInfo = textView3.getText().toString();
-                            if (MainActivity.infoFragment == null) {
-                                MainActivity.infoFragment = new InfoFragment();
-                            } else {
-                                FragmentManager fm = getFragmentManager();
-                                fm.beginTransaction().remove(MainActivity.infoFragment).commit();
-                                MainActivity.infoFragment = new InfoFragment();
-                            }
-                            if ("运行数据".equals(alarmInfo.split(":")[1])) {
-                                Bundle bundle = new Bundle();
-                                bundle.putStringArrayList("ph", ph);
-                                bundle.putStringArrayList("orp", orp);
-                                bundle.putStringArrayList("yxl", yxl);
-                                bundle.putStringArrayList("current", current);
-                                MainActivity.infoFragment.setArguments(bundle);
-                                MainActivity.tb.switchContent(MainActivity.infoFragment);
-                            } else {
-                                final MaterialDialog mMaterialDialog = new MaterialDialog(getActivity());
-                                mMaterialDialog.setTitle("具体内容")
-                                        .setMessage(deviceName + "\n" + time + "\n" + alarmInfo)
-                                        .setPositiveButton("确定", new View.OnClickListener() {
-                                            @Override
-                                            public void onClick(View v) {
-                                                mMaterialDialog.dismiss();
-
-                                            }
-                                        })
-                                        .setNegativeButton("取消", new View.OnClickListener() {
-                                            @Override
-                                            public void onClick(View v) {
-                                                mMaterialDialog.dismiss();
-
-                                            }
-                                        });
-
-                                mMaterialDialog.show();
-
-
-                            }
-
-                        }
-                    });
                     recyclerView.setAdapter(deviceAdapter);
                     deviceAdapter.notifyDataSetChanged();
                     progressDialog.dismiss();
                     break;
                 case 3:
-                    System.out.println("case3");
-                    System.out.println("datestart:" + date_start);
-                    System.out.println("dateend:" + date_end);
                     deviceInfos.clear();
                     ph.clear();
                     orp.clear();
@@ -214,68 +155,20 @@ public class DeviceFragment extends Fragment {
                                 orp.add(arr[4]);
                                 yxl.add(arr[5]);
                                 current.add(arr[6]);
-                                deviceInfos.add(new DeviceInfo("制水机", deviceId, time, getAlarmCode(alarmInfo)));
+                                deviceInfos.add(new DeviceInfo( disContent(time), getAlarmCode(alarmInfo),"其他信息"));
                             } else {
                                 if ("CE".equals(alarmInfo)) {
-                                    deviceInfos.add(new DeviceInfo(getDeviceName(deviceId), deviceId, time, getZsjError(arr[3])));
+                                    deviceInfos.add(new DeviceInfo(disContent(time), getZsjError(arr[3]),"其他信息"));
                                 } else if ("CT".equals(alarmInfo)) {
-                                    deviceInfos.add(new DeviceInfo(getDeviceName(deviceId), deviceId, time, getSxAlarmType(arr[3])));
+                                    deviceInfos.add(new DeviceInfo(disContent(time), getSxAlarmType(arr[3]),"其他信息"));
                                 } else {
-                                    deviceInfos.add(new DeviceInfo(getDeviceName(deviceId), deviceId, time, getAlarmCode(alarmInfo)));
+                                    deviceInfos.add(new DeviceInfo(disContent(time), getAlarmCode(alarmInfo),"其他信息"));
                                 }
 
                             }
                         }
                     }
                     deviceAdapter = new DeviceAdapter(deviceInfos);
-                    deviceAdapter.setOnItemClickListener(new DeviceAdapter.onRecyclerViewItemClickListener() {
-                        @Override
-                        public void onItemClick(View v, String tag) {
-                            TextView textView1 = (TextView) v.findViewById(R.id.device_id);
-                            TextView textView2 = (TextView) v.findViewById(R.id.time);
-                            TextView textView3 = (TextView) v.findViewById(R.id.alarm_info);
-                            String deviceName = textView1.getText().toString();
-                            String time = textView2.getText().toString();
-                            String alarmInfo = textView3.getText().toString();
-                            if (MainActivity.infoFragment == null) {
-                                MainActivity.infoFragment = new InfoFragment();
-                            } else {
-                                FragmentManager fm = getFragmentManager();
-                                fm.beginTransaction().remove(MainActivity.infoFragment).commit();
-                                MainActivity.infoFragment = new InfoFragment();
-                            }
-                            if ("运行数据".equals(alarmInfo.split(":")[1])) {
-                                Bundle bundle = new Bundle();
-                                bundle.putStringArrayList("ph", ph);
-                                bundle.putStringArrayList("orp", orp);
-                                bundle.putStringArrayList("yxl", yxl);
-                                bundle.putStringArrayList("current", current);
-                                MainActivity.infoFragment.setArguments(bundle);
-                                MainActivity.tb.switchContent(MainActivity.infoFragment);
-                            } else {
-                                final MaterialDialog mMaterialDialog = new MaterialDialog(getActivity());
-                                mMaterialDialog.setTitle("具体内容")
-                                        .setMessage(deviceName + "\n" + time + "\n" + alarmInfo)
-                                        .setPositiveButton("确定", new View.OnClickListener() {
-                                            @Override
-                                            public void onClick(View v) {
-                                                mMaterialDialog.dismiss();
-
-                                            }
-                                        })
-                                        .setNegativeButton("取消", new View.OnClickListener() {
-                                            @Override
-                                            public void onClick(View v) {
-                                                mMaterialDialog.dismiss();
-
-                                            }
-                                        });
-
-                                mMaterialDialog.show();
-
-                            }
-                        }
-                    });
                     recyclerView.setAdapter(deviceAdapter);
                     deviceAdapter.notifyDataSetChanged();
                     break;
@@ -310,6 +203,8 @@ public class DeviceFragment extends Fragment {
         System.out.println("登录机房");
         bt = (Button) getActivity().findViewById(R.id.bt);
         bt2 = (Button) getActivity().findViewById(R.id.bt2);
+        bt.setText("起始日期\n"+beginFormat(getBeforeMonth()));
+        bt2.setText("结束日期\n"+endFormat(getPresentMonth()));
         //起始
         bt.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -328,7 +223,7 @@ public class DeviceFragment extends Fragment {
             }
         });
         recyclerView = (RecyclerView) getActivity().findViewById(R.id.cardLayout2);
-        GridLayoutManager layoutManager = new GridLayoutManager(getActivity(), 2);
+        GridLayoutManager layoutManager = new GridLayoutManager(getActivity(), 1);
         recyclerView.setLayoutManager(layoutManager);
 
     }
@@ -538,9 +433,10 @@ public class DeviceFragment extends Fragment {
                                 System.out.println("bt:");
                                 if (date == null) {
                                     date_start = calendar.getThisday();
-
+                                    bt.setText("起始日期\n"+beginFormat(date_start));
                                 } else {
                                     date_start = transform2(date);
+                                    bt.setText("起始日期\n"+beginFormat(date_start));
                                 }
 
                             }
@@ -548,9 +444,10 @@ public class DeviceFragment extends Fragment {
                                 System.out.println("bt2:");
                                 if (date == null) {
                                     date_end = calendar.getThisday();
-
+                                    bt2.setText("结束日期\n"+endFormat(date_end));
                                 } else {
                                     date_end = transform2(date);
+                                    bt2.setText("结束日期\n"+endFormat(date_end));
                                 }
 
                                 message.what = 3;
@@ -564,29 +461,6 @@ public class DeviceFragment extends Fragment {
         }
     }
 
-    /**
-     * 获取两个日期之间的日期
-     *
-     * @param start 开始日期
-     * @param end   结束日期
-     * @return 日期集合
-     */
-    public List<Date> getBetweenDates(Date start, Date end) {
-        List<Date> result = new ArrayList<Date>();
-        Calendar tempStart = Calendar.getInstance();
-        tempStart.setTime(start);
-        tempStart.add(Calendar.DAY_OF_YEAR, 1);
-
-        Calendar tempEnd = Calendar.getInstance();
-        tempEnd.setTime(end);
-        while (tempStart.before(tempEnd)) {
-            result.add(tempStart.getTime());
-            tempStart.add(Calendar.DAY_OF_YEAR, 1);
-        }
-        result.add(start);
-        result.add(end);
-        return result;
-    }
 
 
     public Date getBeforeMonth() {
@@ -604,34 +478,23 @@ public class DeviceFragment extends Fragment {
 
     }
 
-    public String getAlarmType(String type) {
 
-        if (type.equals("显示全部")) {
-            return null;
-        } else if (type.equals("设备一般警告")) {
-            return "1";
-        } else if (type.equals("设备严重警告")) {
-            return "2";
-        } else {
-            return "3";
-        }
-    }
 
     //得到制水机以外的设备名
     public String getDeviceName(String name) {
         if (!"".equals(name) && name != null) {
             switch (name) {
-                case "1":
+                case "0":
                     return "原水箱";
-                case "2":
+                case "1":
                     return "纯水箱";
-                case "3":
+                case "2":
                     return "酸水箱";
-                case "4":
+                case "3":
                     return "碱水箱";
+                case "4":
+                    return "盐水箱";
                 case "5":
-                    return "电解剂箱";
-                case "6":
                     return "搅拌箱";
                 case "SYS":
                     return "系统设备";
@@ -652,17 +515,19 @@ public class DeviceFragment extends Fragment {
                 case "C1":
                     return "停止制水";
                 case "C2":
-                    return "运行数据";
+                    return "上传制水数据";
                 case "CE":
-                    return "制水机组错误及报警";
+                    return "制水机组报警";
                 case "CT":
-                    return "水箱系统错误及报警";
+                    return "水箱组报警";
                 case "C6":
                     return "系统启动";
+               default:
+                   return null;
             }
+
         }
         return null;
-
     }
 
     //得到制水机错误类型
@@ -670,15 +535,15 @@ public class DeviceFragment extends Fragment {
         String str = Integer.toHexString(Integer.parseInt(error));
         switch (str) {
             case "ff":
-                return "制水机离线";
+                return "离线";
             case "40":
-                return "制水机过流保护";
+                return "过流保护";
             case "20":
-                return "制水机高水压保护";
+                return "高水压保护";
             case "10":
-                return "制水机低水压保护";
+                return "低水压保护";
             case "4":
-                return "制水机电解槽失效";
+                return "电解槽耗尽";
             default:
                 return null;
         }
@@ -689,8 +554,21 @@ public class DeviceFragment extends Fragment {
         String str = Integer.toHexString(Integer.parseInt(alarm));
         switch (str) {
             case "ff":
-                return "液位计错误";
+                return "信号错误";
             case "0":
+                return "低水位报警";
+            default:
+                return null;
+        }
+    }
+    //得到水箱故障
+    public String getSxError(String error){
+        switch (error){
+            case "ZZ":
+                return "未设置传感器";
+            case "FF":
+                return "信号故障";
+            case "00":
                 return "低水位报警";
             default:
                 return null;
@@ -698,6 +576,7 @@ public class DeviceFragment extends Fragment {
     }
 
 
+      //按yyyyMMdd格式输出日期
     public Date transform(String s) {
         Date d = null;
 
@@ -710,7 +589,7 @@ public class DeviceFragment extends Fragment {
         }
         return d;
     }
-
+    //按yyyy-MM-dd格式输出日期
     public Date transform2(String s) {
         Date d = null;
 
@@ -740,6 +619,41 @@ public class DeviceFragment extends Fragment {
         //fmt.setTimeZone(new TimeZone()); // 如果需要设置时间区域，可以在这里设置
         return fmt.format(d1).equals(fmt.format(d2));
     }
+
+     //转换起始日期格式
+     public String beginFormat(Date bTime){
+
+         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy年MM月dd日HH点");
+         String str = simpleDateFormat.format(bTime);
+         return  str;
+     }
+
+
+    //转换结束日期格式
+    public String  endFormat(Date eTime){
+
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy年MM月dd日");
+        String str = simpleDateFormat.format(eTime);
+        return  str+"24点";
+
+    }
+    //显示内容日期格式
+    public String disContent(String s){
+
+        try {
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmm");
+            Date d = sdf.parse(s);
+            SimpleDateFormat sdf2 = new SimpleDateFormat("yyyy年MM月dd日HH:mm");
+            String str = sdf2.format(d);
+            System.out.println("str:"+str);
+            return str;
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+
 
 
 }

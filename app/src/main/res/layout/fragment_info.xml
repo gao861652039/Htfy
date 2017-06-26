@@ -42,7 +42,7 @@
         line:colorEdgeEffect="@color/colorPrimaryDark"
         line:needClickHint="true"
         line:colorHint="@color/colorPrimary"
-        line:maxOfVisible="30"
+        line:maxOfVisible="10"
         line:countOfY="15"
         />
 

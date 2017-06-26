@@ -41,8 +41,8 @@ public class MainActivity extends FragmentActivity implements BottomTabBar.OnSel
         tb = (BottomTabBar) findViewById(R.id.tb);
         bars = new ArrayList<>();
         bars.add(new BarEntity("用户", R.drawable.pic_user, R.drawable.pic_user));
-        bars.add(new BarEntity("报警", R.drawable.pic_device, R.drawable.pic_device));
-        bars.add(new BarEntity("日志", R.drawable.pic_info, R.drawable.pic_info));
+        bars.add(new BarEntity("日志", R.drawable.pic_device, R.drawable.pic_device));
+        bars.add(new BarEntity("数据", R.drawable.pic_info, R.drawable.pic_info));
         bars.add(new BarEntity("设置", R.drawable.pic_setting, R.drawable.pic_setting));
         tb.setManager(manager).setOnSelectListener(this).setBars(bars);
     }

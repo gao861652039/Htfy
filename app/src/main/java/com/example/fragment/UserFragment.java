@@ -1,11 +1,8 @@
 package com.example.fragment;
 
 import android.app.ProgressDialog;
-import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
-import android.os.AsyncTask;
 import android.os.Bundle;
 
 import android.os.Handler;
@@ -22,21 +19,11 @@ import android.widget.TextView;
 import com.example.activity.MainActivity;
 import com.example.activity.R;
 import com.example.adapter.UserAdapter;
-import com.example.tab.BottomTabBar;
-import com.example.tab.Connect;
-import com.example.tab.UserInfo;
+import com.example.entity.UserInfo;
 import com.example.thread.GdtmExitThread;
 import com.example.thread.ReceiveGetUserInfo;
 import com.example.thread.SendThread;
 
-import java.io.BufferedInputStream;
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStreamWriter;
-import java.io.PrintStream;
-import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -74,7 +61,7 @@ public class UserFragment extends Fragment {
                               String roomAddress = user[1];
                               String userAddress = user[2];
                               String time = user[3];
-                              list.add(new UserInfo(macRoom, userName, roomAddress, userAddress, time, View.VISIBLE));
+                              list.add(new UserInfo(macRoom, userName, roomAddress, userAddress, time));
                           }
                       }catch (Exception e){
                           if(userInfo.size()!=0){

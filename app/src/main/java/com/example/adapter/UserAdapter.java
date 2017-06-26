@@ -1,21 +1,17 @@
 package com.example.adapter;
 
 import android.content.Context;
-import android.graphics.drawable.Drawable;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.activity.R;
-import com.example.tab.UserInfo;
+import com.example.entity.UserInfo;
 
 import java.util.List;
-
-import static android.R.drawable.ic_lock_lock;
 
 /**
  * Created by 高峰 on 2017/2/12.
@@ -50,12 +46,6 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
     public void onBindViewHolder(ViewHolder holder, int position) {
         holder.itemView.setTag(String.valueOf(position));
         UserInfo userInfo = mUserInfo.get(position);
-
-            if(userInfo.getISVISBLE() == View.VISIBLE) {
-                holder.imageView.setVisibility(View.VISIBLE);
-            }else{
-                holder.imageView.setVisibility(View.INVISIBLE);
-            }
         holder.machnum.append(userInfo.getMachNum());
         holder.username.append(userInfo.getUsername());
         holder.useraddress.append(userInfo.getUseraddress());
@@ -77,7 +67,7 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
         TextView useraddress;
         TextView location;
         TextView data_time;
-        ImageView imageView;
+
 
         public ViewHolder(View itemView) {
             super(itemView);
@@ -87,7 +77,7 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
             useraddress = (TextView) itemView.findViewById(R.id.user_address);
             location = (TextView) itemView.findViewById(R.id.location);
             data_time = (TextView) itemView.findViewById(R.id.data_time);
-            imageView = (ImageView) itemView.findViewById(R.id.imageView);
+
         }
 
 

@@ -1,4 +1,4 @@
-package com.example.tab;
+package com.example.entity;
 
 import android.graphics.drawable.Drawable;
 
@@ -12,15 +12,14 @@ public class UserInfo {
     private String useraddress;
     private String location;
     private String date;
-    private int ISVISBLE;
 
-    public UserInfo(String machNum, String username, String useraddress, String location, String date, int ISVISBLE) {
+
+    public UserInfo(String machNum, String username, String useraddress, String location, String date) {
         this.machNum = machNum;
         this.username = username;
         this.useraddress = useraddress;
         this.location = location;
         this.date = date;
-        this.ISVISBLE = ISVISBLE;
     }
 
     public String getMachNum() {
@@ -63,11 +62,7 @@ public class UserInfo {
         this.date = date;
     }
 
-    public int getISVISBLE() {
-        return ISVISBLE;
-    }
 
-    public void setISVISBLE(int ISVISBLE) {
-        this.ISVISBLE = ISVISBLE;
-    }
+
+
 }

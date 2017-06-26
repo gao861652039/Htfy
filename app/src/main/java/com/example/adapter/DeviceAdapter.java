@@ -9,7 +9,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.example.activity.R;
-import com.example.tab.DeviceInfo;
+import com.example.entity.DeviceInfo;
 
 
 import java.util.List;
@@ -45,10 +45,10 @@ public class DeviceAdapter extends RecyclerView.Adapter<DeviceAdapter.ViewHolder
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
               DeviceInfo deviceInfo = mDeviceInfo.get(position);
-              holder.device_name.setText("设备名:"+deviceInfo.getDevicename());
-              holder.device_id.setText("设备ID:"+deviceInfo.getDeviceId());
-              holder.time.setText("日期:"+deviceInfo.getTime());
-              holder.alarm_info.setText("报警类型:"+deviceInfo.getAlarminfo());
+
+              holder.time.setText(deviceInfo.getTime());
+              holder.alarm_info.setText(deviceInfo.getAlarminfo());
+              holder.other_info.setText(deviceInfo.getOtherInfo());
 
     }
 
@@ -59,18 +59,16 @@ public class DeviceAdapter extends RecyclerView.Adapter<DeviceAdapter.ViewHolder
 
     static class ViewHolder extends RecyclerView.ViewHolder{
         CardView cardView;
-        TextView device_name;
-        TextView device_id;
         TextView time;
         TextView alarm_info;
+        TextView other_info;
 
         public ViewHolder(View itemView) {
             super(itemView);
             cardView = (CardView) itemView;
-            device_name = (TextView) itemView.findViewById(R.id.device_name);
-            device_id = (TextView) itemView.findViewById(R.id.device_id);
             time = (TextView) itemView.findViewById(R.id.time);
             alarm_info =(TextView) itemView.findViewById(R.id.alarm_info);
+            other_info = (TextView) itemView.findViewById(R.id.other_info);
         }
     }
 
