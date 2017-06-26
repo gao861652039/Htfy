@@ -33,20 +33,21 @@ public class ReceiveWorkMessage extends  Thread {
     public void run() {
         try {
             socket = Connect.getSocket();
-            BufferedReader br = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+            InputStream is = socket.getInputStream();
             String line= null;
             int len = 0;
-            char[] buf = new char[1024];
-            while((len = br.read(buf))!=-1){
+            byte[] buf = new byte[1024];
+            while((len = is.read(buf))!=-1){
                 line = new String(buf,0,len);
-                Message msg =new Message();
                 System.out.println("line:"+line);
                 if(line.contains("#E")){
                     throw new IOException();
+                }else {
+                    Message msg =new Message();
+                    msg.what = 1;
+                    msg.obj = line;
+                    handler.sendMessage(msg);
                 }
-                msg.what = 1;
-                msg.obj = line;
-                handler.sendMessage(msg);
             }
 
         } catch (IOException e) {

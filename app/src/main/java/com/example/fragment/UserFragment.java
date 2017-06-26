@@ -216,7 +216,7 @@ public class UserFragment extends Fragment {
 
              new SendThread("CB"+gdtm_id[i]).start();
              try {
-                 Thread.sleep(10);
+                 Thread.sleep(50);
              } catch (InterruptedException e) {
                  e.printStackTrace();
              }

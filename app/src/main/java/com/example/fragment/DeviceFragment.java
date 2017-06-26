@@ -80,11 +80,11 @@ public class DeviceFragment extends Fragment {
                     } else {
                         sb.append(str);
                         new SendThread("CC").start();
-                        try {
-                            Thread.sleep(10);
-                        } catch (InterruptedException e) {
-                            e.printStackTrace();
-                        }
+//                        try {
+//                            Thread.sleep(10);
+//                        } catch (InterruptedException e) {
+//                            e.printStackTrace();
+//                        }
                     }
                     break;
                 case 2:
@@ -186,7 +186,6 @@ public class DeviceFragment extends Fragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        System.out.println("onActivityCreated");
         rwm = new ReceiveWorkMessage(handler);
         rwm.start();
         progressDialog =new ProgressDialog(getActivity());
@@ -264,7 +263,7 @@ public class DeviceFragment extends Fragment {
     public void handleSxMessage(String time,String alarmInfo,String sx){
         //水箱顺序
         //原水箱，纯水箱，酸水箱，碱水箱，盐水箱，搅拌箱
-        //Z：离线，3：高水位，2：中水位，1：低水位
+        //Z：离线，3：高水位，2：中水位，1：补水位，0：警戒位
         if((!"".equals(sx)) && sx!=null ){
             String ysx  =  sx.substring(0,1);
             String csx  =  sx.substring(1,2);
@@ -314,7 +313,7 @@ public class DeviceFragment extends Fragment {
     }
 
     public String handlePH(String ph){
-        float a  = (Integer.parseInt(ph))/10;
+        float a  = (Float.parseFloat(ph))/10;
         return  String.valueOf(a);
     }
 

@@ -100,7 +100,9 @@ public class MachineUtils {
             case "2":
                 return "中水位 ";
             case "1":
-                return "低水位 ";
+                return "补水位 ";
+            case "0":
+                 return "警戒位 ";
             default:
                 return null;
         }
