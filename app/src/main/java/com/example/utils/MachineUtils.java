@@ -81,9 +81,9 @@ public class MachineUtils {
         switch (str){
             case "ZZ":
                 return "未设置传感器";
-            case "FF":
+            case "ff":
                 return "信号故障";
-            case "00":
+            case "0":
                 return "低水位报警";
             default:
                 return null;

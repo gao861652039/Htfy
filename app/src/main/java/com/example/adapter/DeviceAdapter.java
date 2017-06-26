@@ -1,6 +1,7 @@
 package com.example.adapter;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -44,11 +45,16 @@ public class DeviceAdapter extends RecyclerView.Adapter<DeviceAdapter.ViewHolder
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-              DeviceInfo deviceInfo = mDeviceInfo.get(position);
-
+               DeviceInfo deviceInfo = mDeviceInfo.get(position);
+              if (deviceInfo.getFlag() == true){
+                  holder.other_info.setTextColor(Color.RED);
+              }else{
+                   holder.other_info.setTextColor(Color.BLACK);
+              }
               holder.time.setText(deviceInfo.getTime());
               holder.alarm_info.setText(deviceInfo.getAlarminfo());
               holder.other_info.setText(deviceInfo.getOtherInfo());
+
 
     }
 

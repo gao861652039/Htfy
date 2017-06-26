@@ -9,12 +9,13 @@ public class DeviceInfo {
     private String time;
     private String alarminfo;
     private String otherInfo;
-
-    public DeviceInfo( String time, String alarminfo,String otherInfo) {
+    private boolean flag = false;
+    public DeviceInfo( String time, String alarminfo,String otherInfo,boolean flag) {
 
         this.time = time;
         this.alarminfo = alarminfo;
         this.otherInfo = otherInfo;
+        this.flag = flag;
     }
 
 
@@ -41,5 +42,13 @@ public class DeviceInfo {
 
     public void setOtherInfo(String otherInfo) {
         this.otherInfo = otherInfo;
+    }
+
+    public boolean getFlag() {
+        return flag;
+    }
+
+    public void setFlag(boolean flag) {
+        this.flag = flag;
     }
 }

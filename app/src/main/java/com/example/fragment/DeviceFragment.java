@@ -278,7 +278,7 @@ public class DeviceFragment extends Fragment {
                             "酸水箱:"+sxMsgType(ssx)+"\n"+
                             "碱水箱:"+sxMsgType(jsx)+
                             "盐水箱:"+sxMsgType(yansx)+
-                            "搅拌箱:"+sxMsgType(jbx)));
+                            "搅拌箱:"+sxMsgType(jbx),false));
         }
 
 
@@ -292,10 +292,10 @@ public class DeviceFragment extends Fragment {
           if((!"".equals(param))&& param!=null){
               if("CE".equals(alarmInfo)){
                     deviceInfos.add(new DeviceInfo(TimeUtils.disContent(time),getAlarmCode(alarmInfo),
-                             deviceId+"号机"+MachineUtils.getZsjError(param)));
+                             deviceId+"号机"+MachineUtils.getZsjError(param),true));
               }else{
                     deviceInfos.add(new DeviceInfo(TimeUtils.disContent(time),getAlarmCode(alarmInfo),
-                             sxId(deviceId)+MachineUtils.getSxError(param)));
+                             sxId(deviceId)+MachineUtils.getSxError(param),true));
               }
           }
 
@@ -308,7 +308,7 @@ public class DeviceFragment extends Fragment {
                  "[PH:"+handlePH(dataInfo.getPh())+"]"+
                  "[ORP:"+dataInfo.getOrp()+"mv]"+
                  "[有效氯:"+dataInfo.getYxl()+"mg/L]"+
-                 "[电流:"+dataInfo.getDl()+"A]"));
+                 "[电流:"+dataInfo.getDl()+"A]",false));
         }
     }
 
