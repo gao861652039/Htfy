@@ -1,5 +1,6 @@
 package com.example.fragment;
 
+import android.app.Application;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
@@ -83,9 +84,6 @@ public class UserFragment extends Fragment {
                                   message = res[1];
                                   if (MainActivity.deviceFragment == null) {
                                       if(MainActivity.infoFragment!=null){
-//                                          MainActivity.manager.beginTransaction().remove(MainActivity.infoFragment)
-//                                                  .hide(MainActivity.infoFragment)
-//                                                  .commit();
                                           MainActivity.infoFragment = null;
                                       }
                                       MainActivity.deviceFragment = new DeviceFragment();
@@ -95,9 +93,6 @@ public class UserFragment extends Fragment {
                                       MainActivity.tb.switchContent(MainActivity.deviceFragment);
                                   } else {
                                       if(MainActivity.infoFragment!=null){
-//                                          MainActivity.manager.beginTransaction().remove(MainActivity.infoFragment)
-//                                                  .hide(MainActivity.infoFragment)
-//                                                  .commit();
                                           MainActivity.infoFragment = null;
                                       }
                                       new GdtmExitThread(handler).start();

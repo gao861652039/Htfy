@@ -146,8 +146,8 @@ public class DeviceFragment extends Fragment {
                         Date subTime = transform(time);
                         if ((subTime.before(date_end) && subTime.after(date_start)) || sameDate(subTime, date_start) || sameDate(subTime, date_end)) {
                                       if("C0".equals(alarmInfo) || "C6".equals(alarmInfo) ||"C1".equals(alarmInfo)){
-                                          String sxMsg = arr[9];
-                                          handleSxMessage(time,alarmInfo,sxMsg);
+                                                  String sxMsg = arr[9];
+                                                  handleSxMessage(time,alarmInfo,sxMsg);
                                       }else if("CE".equals(alarmInfo) || "CT".equals(alarmInfo)){
                                           String param = arr[3];
                                           handleAlarmInfo(time,alarmInfo,deviceId,param);
@@ -202,7 +202,6 @@ public class DeviceFragment extends Fragment {
         bt.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
                 new PopupWindows(getContext(), bt);
                 id = v.getId();
             }
@@ -280,11 +279,6 @@ public class DeviceFragment extends Fragment {
                             "盐水箱:"+sxMsgType(yansx)+
                             "搅拌箱:"+sxMsgType(jbx),false));
         }
-
-
-
-
-
     }
 
     //处理报警和故障信息
@@ -307,8 +301,7 @@ public class DeviceFragment extends Fragment {
          deviceInfos.add(new DeviceInfo(TimeUtils.disContent(time),getAlarmCode(alarmInfo),
                  "[PH:"+handlePH(dataInfo.getPh())+"]"+
                  "[ORP:"+dataInfo.getOrp()+"mv]"+
-                 "[有效氯:"+dataInfo.getYxl()+"mg/L]"+
-                 "[电流:"+dataInfo.getDl()+"A]",false));
+                 "[有效氯:"+dataInfo.getYxl()+"mg/L]",false));
         }
     }
 
