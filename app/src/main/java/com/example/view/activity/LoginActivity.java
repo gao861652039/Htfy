@@ -88,7 +88,8 @@ public class LoginActivity extends AppCompatActivity implements LoginPresenter.I
 //通信协议验证
     @Override
     public void onCheckedSuccess() {
-        loginPresenter.getGdtmId(message);
+        //loginPresenter.getGdtmId(message);
+        Toast.makeText(LoginActivity.this,"通信验证成功",Toast.LENGTH_SHORT).show();
     }
 
     @Override
