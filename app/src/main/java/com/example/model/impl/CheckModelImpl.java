@@ -62,6 +62,7 @@ public class CheckModelImpl implements VertifyModel {
                     while ((len = is.read(b))!=-1){
                         String str = new String(b,0,len);
                         e.onNext(str);
+                        Log.e("tag",str);
                     }
 
             }
