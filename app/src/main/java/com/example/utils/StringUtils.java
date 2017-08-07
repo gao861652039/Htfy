@@ -29,5 +29,13 @@ public class StringUtils {
             }
         }
     }
+    public static String changeType(int num) {
+        String str = "" + num;
+        if (str.length() == 1) {
+            return "0" + str;
+        } else {
+            return str;
+        }
+    }
 
 }

@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <com.example.tab.BottomTabBar
+    <com.example.utils.tab.BottomTabBar
         android:id="@+id/tb"
         android:layout_width="match_parent"
         app:backgroundColor="@color/white"
@@ -13,6 +13,6 @@
         app:textSelectColor="@color/colorAccent"
         android:layout_height="match_parent">
 
-    </com.example.tab.BottomTabBar>
+    </com.example.utils.tab.BottomTabBar>
 
 </LinearLayout>

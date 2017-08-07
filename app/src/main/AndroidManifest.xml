@@ -2,7 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
 
-    package="com.example.activity">
+    package="com.example.view.activity">
     <!--允许应用程序改变网络状态-->
     <uses-permission android:name="android.permission.CHANGE_NETWORK_STATE"/>
      <uses-permission android:name="android.permission.KILL_BACKGROUND_PROCESSES"/>
