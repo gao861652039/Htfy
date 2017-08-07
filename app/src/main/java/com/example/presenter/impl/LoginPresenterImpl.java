@@ -1,9 +1,8 @@
 package com.example.presenter.impl;
 
-import com.example.model.LoginModel;
 import com.example.model.impl.LoginModelImpl;
-import com.example.presenter.LoginPresenter;
-import com.example.presenter.OnLoginListener;
+import com.example.presenter.inter.LoginPresenter;
+import com.example.presenter.inter.OnLoginListener;
 
 /**
  * Created by 高峰 on 2017/8/7.

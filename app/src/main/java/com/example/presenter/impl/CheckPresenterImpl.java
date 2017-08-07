@@ -1,8 +1,8 @@
 package com.example.presenter.impl;
 
 import com.example.model.impl.CheckModelImpl;
-import com.example.presenter.CheckPresenter;
-import com.example.presenter.OnCheckListener;
+import com.example.presenter.inter.CheckPresenter;
+import com.example.presenter.inter.OnCheckListener;
 
 /**
  * Created by 高峰 on 2017/8/7.

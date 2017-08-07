@@ -1,4 +1,4 @@
-package com.example.model;
+package com.example.model.inter;
 
 /**
  * Created by 高峰 on 2017/8/7.

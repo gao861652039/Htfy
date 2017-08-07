@@ -2,16 +2,14 @@ package com.example.view.activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
-import com.example.model.thread.ReceiveMessageThread;
-import com.example.model.thread.SendThread;
-import com.example.presenter.CheckPresenter;
-import com.example.presenter.LoginPresenter;
+
+import com.example.presenter.inter.CheckPresenter;
+import com.example.presenter.inter.LoginPresenter;
 import com.example.presenter.impl.CheckPresenterImpl;
 import com.example.presenter.impl.LoginPresenterImpl;
 import com.example.utils.StringUtils;
@@ -69,6 +67,7 @@ public class LoginActivity extends AppCompatActivity implements LoginPresenter.I
 //账户登录结果
     @Override
     public void onSuccess(String[] gdtmId) {
+        Log.e("tag","登陆成功");
         Intent intent = new Intent(LoginActivity.this,MainActivity.class);
         intent.putExtra("gdtm_id",gdtmId);
         startActivity(intent);
@@ -88,12 +87,11 @@ public class LoginActivity extends AppCompatActivity implements LoginPresenter.I
 //通信协议验证
     @Override
     public void onCheckedSuccess() {
-        //loginPresenter.getGdtmId(message);
-        Toast.makeText(LoginActivity.this,"通信验证成功",Toast.LENGTH_SHORT).show();
+        loginPresenter.getGdtmId(message);
     }
 
     @Override
     public void onCheckedFailure() {
-        Toast.makeText(LoginActivity.this,"通信版本不正确",Toast.LENGTH_SHORT).show();
+        Log.e("tag","通信版本不正确");
     }
 }
