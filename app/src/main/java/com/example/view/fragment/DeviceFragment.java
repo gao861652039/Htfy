@@ -21,14 +21,13 @@ import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+
 import com.example.view.activity.MainActivity;
 import com.example.view.activity.R;
 import com.example.view.adapter.DeviceAdapter;
 import com.example.model.entity.DataInfo;
 import com.example.model.entity.DeviceInfo;
 import com.example.utils.tab.KCalendar;
-import com.example.model.thread.ReceiveWorkMessage;
-import com.example.model.thread.SendThread;
 import com.example.utils.MachineUtils;
 import com.example.utils.TimeUtils;
 
@@ -52,7 +51,7 @@ import static com.example.utils.TimeUtils.transform2;
  * Created by gaofeng on 2017/2/11.
  */
 public class DeviceFragment extends Fragment {
-    private ReceiveWorkMessage rwm;
+
     private List<DeviceInfo> deviceInfos = new ArrayList<>();
     private DeviceAdapter deviceAdapter;
     private ProgressDialog progressDialog = null;
@@ -72,18 +71,14 @@ public class DeviceFragment extends Fragment {
                 case 1:
                     String str = (String) msg.obj;
                     if ("#0".equals(str)) {
-                        new SendThread("C5$" + getBeforeForm() + "0000").start();
+
                         System.out.println("C5$" + getBeforeForm() + "0000");
                     } else if ("#F".equals(str)) {
                         progressDialog.dismiss();
                     } else {
                         sb.append(str);
-                        new SendThread("CC").start();
-//                        try {
-//                            Thread.sleep(10);
-//                        } catch (InterruptedException e) {
-//                            e.printStackTrace();
-//                        }
+
+
                     }
                     break;
                 case 2:
@@ -185,13 +180,12 @@ public class DeviceFragment extends Fragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        rwm = new ReceiveWorkMessage(handler);
-        rwm.start();
+
         progressDialog =new ProgressDialog(getActivity());
         progressDialog.setMessage("正在加载数据");
         progressDialog.setCanceledOnTouchOutside(false);
         progressDialog.show();
-        new SendThread("C9"+getGdtmId()).start();
+
         System.out.println("登录机房");
         bt = (Button) getActivity().findViewById(R.id.bt);
         bt2 = (Button) getActivity().findViewById(R.id.bt2);

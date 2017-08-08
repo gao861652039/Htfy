@@ -9,7 +9,6 @@ import android.view.ViewGroup;
 import android.widget.Button;
 
 import com.example.view.activity.R;
-import com.example.model.thread.SendThread;
 
 /**
  * Created gaofeng on 2017/2/11.
@@ -34,7 +33,7 @@ public class SettingFragment extends Fragment {
          button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                new SendThread("CQ").start();
+
                 System.exit(0);
             }
         });

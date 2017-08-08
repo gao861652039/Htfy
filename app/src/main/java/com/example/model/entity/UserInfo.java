@@ -1,5 +1,8 @@
 package com.example.model.entity;
 
+import java.io.Serializable;
+
+
 /**
  * Created by 高峰 on 2017/2/12.
  */
@@ -19,6 +22,7 @@ public class UserInfo {
         this.location = location;
         this.date = date;
     }
+
 
     public String getMachNum() {
         return machNum;
@@ -59,6 +63,7 @@ public class UserInfo {
     public void setDate(String date) {
         this.date = date;
     }
+
 
 
 

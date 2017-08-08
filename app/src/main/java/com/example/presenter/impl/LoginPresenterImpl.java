@@ -1,5 +1,6 @@
 package com.example.presenter.impl;
 
+import com.example.model.entity.UserInfo;
 import com.example.model.impl.LoginModelImpl;
 import com.example.presenter.inter.LoginPresenter;
 import com.example.presenter.inter.OnLoginListener;
@@ -11,6 +12,7 @@ import com.example.presenter.inter.OnLoginListener;
 public class LoginPresenterImpl  implements LoginPresenter.IloginPresenter{
      private LoginPresenter.IloginView mloginView;
      private LoginModelImpl model = null;
+
      public LoginPresenterImpl(LoginPresenter.IloginView mloginView){
 
                this.mloginView = mloginView;
@@ -18,22 +20,21 @@ public class LoginPresenterImpl  implements LoginPresenter.IloginPresenter{
 
      }
 
+
     @Override
-    public void getGdtmId(String verInfo) {
-        model.login(verInfo);
-        model.loadGdtmId(new OnLoginListener() {
-            @Override
-            public void onSuccess(String[] gdtmId) {
-                mloginView.onSuccess(gdtmId);
-            }
+    public void login(final String username, String password) {
+           model.login(username, password, new OnLoginListener() {
 
-            @Override
-            public void onFailure(String error) {
-                mloginView.onFailure(error);
-            }
-        });
+               @Override
+               public void onSuccess(String[] gdtmId, String[] userInfo) {
 
+                   mloginView.onSuccess(gdtmId,userInfo);
+               }
+
+               @Override
+               public void onFailure(String error) {
+                   mloginView.onFailure(error);
+               }
+           });
     }
-
-
 }

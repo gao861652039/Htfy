@@ -8,6 +8,6 @@ import com.example.presenter.inter.OnLoginListener;
 
 public interface LoginModel {
 
-    void login(String verInfo);
-    void loadGdtmId(OnLoginListener onLoginListener);
+
+    void login(String username,String password,OnLoginListener onLoginListener);
 }

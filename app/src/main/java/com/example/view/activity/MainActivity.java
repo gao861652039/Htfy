@@ -13,7 +13,6 @@ import com.example.view.fragment.SettingFragment;
 import com.example.view.fragment.UserFragment;
 import com.example.utils.tab.BarEntity;
 import com.example.utils.tab.BottomTabBar;
-import com.example.model.thread.SendThread;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -94,7 +93,7 @@ public class MainActivity extends FragmentActivity implements BottomTabBar.OnSel
                     firstTime = secondTime;
                     return true;
                 } else {
-                    new SendThread("CQ").start();
+
                     System.exit(0);
                 }
                 break;

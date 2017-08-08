@@ -3,6 +3,7 @@ package com.example.view.adapter;
 import android.content.Context;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -30,7 +31,6 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
         view.setOnClickListener(new View.OnClickListener() {   //为每一个item绑定监听
             @Override
             public void onClick(View v) {
-                // TODO 自动生成的方法存根
                 if (itemClickListener != null)
                     itemClickListener.onItemClick(v,(String)v.getTag());
             }
@@ -40,6 +40,7 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
 
     }
     public UserAdapter(List<UserInfo> userInfoList) {
+
         mUserInfo = userInfoList;
     }
     @Override
@@ -51,7 +52,6 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
         holder.useraddress.append(userInfo.getUseraddress());
         holder.location.append(userInfo.getLocation());
         holder.data_time.append(userInfo.getDate());
-
 
     }
 
