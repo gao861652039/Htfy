@@ -2,7 +2,7 @@ package com.example.model.impl;
 
 import android.util.Log;
 
-import com.example.model.entity.UserInfo;
+
 import com.example.model.inter.LoginModel;
 import com.example.model.thread.SocketThread;
 import com.example.presenter.inter.OnLoginListener;
@@ -17,7 +17,7 @@ public class LoginModelImpl implements LoginModel {
     @Override
     public void login(String username, String password, OnLoginListener onLoginListener) {
 
-         SocketThread st = new SocketThread();
+         SocketThread st = SocketThread.getInstance();
          st.user_name = username;
          st.user_pass = password;
          st.socket_mode = 0x1;

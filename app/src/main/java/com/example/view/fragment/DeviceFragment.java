@@ -22,6 +22,8 @@ import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.example.presenter.impl.DeviceInfoPresenterImpl;
+import com.example.presenter.inter.DeviceInfoPresenter;
 import com.example.utils.tab.PopupWindows;
 import com.example.view.activity.MainActivity;
 import com.example.view.activity.R;
@@ -55,7 +57,7 @@ import static com.example.utils.TimeUtils.transform2;
 /**
  * Created by gaofeng on 2017/2/11.
  */
-public class DeviceFragment extends Fragment {
+public class DeviceFragment extends Fragment implements DeviceInfoPresenter.IDeviceView{
 
     private List<DeviceInfo> deviceInfos = new ArrayList<>();
     private DeviceAdapter deviceAdapter;
@@ -100,7 +102,6 @@ public class DeviceFragment extends Fragment {
                 pw = new PopupWindows(getContext(),v);
             }
         });
-
         recyclerView = (RecyclerView) getActivity().findViewById(R.id.cardLayout2);
         GridLayoutManager layoutManager = new GridLayoutManager(getActivity(), 1);
         recyclerView.setLayoutManager(layoutManager);
@@ -210,6 +211,15 @@ public class DeviceFragment extends Fragment {
         return String.valueOf(a);
     }
 
+    @Override
+    public void onSuccess(String deviceInfo) {
+
+    }
+
+    @Override
+    public void onFailure(String error) {
+
+    }
 }
 
 

@@ -15,6 +15,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import com.example.presenter.impl.DeviceInfoPresenterImpl;
+import com.example.presenter.inter.DeviceInfoPresenter;
 import com.example.view.activity.MainActivity;
 import com.example.view.activity.R;
 import com.example.view.adapter.UserAdapter;
@@ -29,9 +31,9 @@ import me.drakeet.materialdialog.MaterialDialog;
 /**
  * Created by gaofeng on 2017/2/11.
  */
-public class UserFragment extends Fragment  {
+public class UserFragment extends Fragment  implements DeviceInfoPresenter.IDeviceView{
 
-    private ProgressDialog progressDialog;
+    private DeviceInfoPresenterImpl deviceInfoPresenter = null;
     private RecyclerView recyclerView;
     private UserAdapter adapter;
 
@@ -47,6 +49,7 @@ public class UserFragment extends Fragment  {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+        deviceInfoPresenter = new DeviceInfoPresenterImpl(this);
           List<UserInfo> list = getUserInfos();
           Log.e("tag44444",list.get(0).getLocation());
           recyclerView = (RecyclerView) getActivity().findViewById(R.id.cardLayout);
@@ -58,8 +61,10 @@ public class UserFragment extends Fragment  {
               @Override
               public void onItemClick(View v, String tag) {
                   Toast.makeText(getContext(),tag,Toast.LENGTH_SHORT).show();
-                  MainActivity.deviceFragment = new DeviceFragment();
-                  MainActivity.tb.switchContent(MainActivity.deviceFragment);
+//                  MainActivity.deviceFragment = new DeviceFragment();
+//                  MainActivity.tb.switchContent(MainActivity.deviceFragment);
+                    deviceInfoPresenter.getDeviceInfo(Integer.parseInt(tag));
+
               }
           });
     }
@@ -122,6 +127,15 @@ public class UserFragment extends Fragment  {
            return list;
     }
 
+    @Override
+    public void onSuccess(String deviceInfo) {
+
+    }
+
+    @Override
+    public void onFailure(String error) {
+
+    }
 }
 
 

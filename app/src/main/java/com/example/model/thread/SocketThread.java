@@ -11,6 +11,18 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public class SocketThread extends Thread {
+    private static SocketThread socketThread = new SocketThread();
+
+
+    private SocketThread(){
+
+    }
+
+    public static SocketThread getInstance(){
+        return  socketThread;
+    }
+
+
     public class gdtm_t {
         public gdtm_t next;
         public gdtm_t prev;
