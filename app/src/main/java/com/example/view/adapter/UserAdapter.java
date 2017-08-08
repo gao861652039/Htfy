@@ -45,9 +45,10 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
     }
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        holder.itemView.setTag(String.valueOf(position));
+
         UserInfo userInfo = mUserInfo.get(position);
         holder.machnum.append(userInfo.getMachNum());
+        holder.itemView.setTag(userInfo.getMachNum());
         holder.username.append(userInfo.getUsername());
         holder.useraddress.append(userInfo.getUseraddress());
         holder.location.append(userInfo.getLocation());

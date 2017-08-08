@@ -13,6 +13,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.example.view.activity.MainActivity;
 import com.example.view.activity.R;
@@ -53,6 +54,14 @@ public class UserFragment extends Fragment  {
           recyclerView.setLayoutManager(layoutManager);
           adapter = new UserAdapter(list);
           recyclerView.setAdapter(adapter);
+          adapter.setOnItemClickListener(new UserAdapter.onRecyclerViewItemClickListener() {
+              @Override
+              public void onItemClick(View v, String tag) {
+                  Toast.makeText(getContext(),tag,Toast.LENGTH_SHORT).show();
+                  MainActivity.deviceFragment = new DeviceFragment();
+                  MainActivity.tb.switchContent(MainActivity.deviceFragment);
+              }
+          });
     }
 
 
