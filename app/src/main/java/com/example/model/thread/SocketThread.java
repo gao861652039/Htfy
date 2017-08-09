@@ -1,5 +1,7 @@
 package com.example.model.thread;
 
+import android.util.Log;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -11,15 +13,18 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public class SocketThread extends Thread {
-    private static SocketThread socketThread = new SocketThread();
+    private static SocketThread instance = new SocketThread();
+
+
 
 
     private SocketThread(){
 
     }
 
-    public static SocketThread getInstance(){
-        return  socketThread;
+    public  static SocketThread getInstance(){
+
+        return  instance;
     }
 
 
@@ -426,7 +431,10 @@ public class SocketThread extends Thread {
                         ret = socket_state;
                         break;
                 }
-                if (ret != 0x0) break;
+                if (ret != 0x0) {
+                    Log.e("sendMsg","SENDmSG");
+                    break;
+                }
             } while (false);
             if (socketUserLogout() != 0x0)  return;
             if (socketClose() != 0x0)   return;

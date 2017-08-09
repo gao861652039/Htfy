@@ -4,6 +4,8 @@ import com.example.model.impl.DeviceModelImpl;
 import com.example.presenter.inter.DeviceInfoPresenter;
 import com.example.presenter.inter.OnDeviceInfoListener;
 
+import java.util.List;
+
 /**
  * Created by gaofeng on 2017/8/8.
  */
@@ -20,9 +22,11 @@ public class DeviceInfoPresenterImpl implements DeviceInfoPresenter.IDevicePrese
     @Override
     public void getDeviceInfo(int sel) {
          deviceModel.loadDeviceInfo(sel, new OnDeviceInfoListener() {
+
+
              @Override
-             public void onSuccess(String deviceInfo) {
-                  deviceView.onSuccess(deviceInfo);
+             public void onSuccess(List<String> deviceInfo, List<String> detailInfo) {
+                   deviceView.onSuccess(deviceInfo,detailInfo);
              }
 
              @Override

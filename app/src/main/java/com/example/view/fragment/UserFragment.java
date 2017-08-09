@@ -22,6 +22,10 @@ import com.example.view.activity.R;
 import com.example.view.adapter.UserAdapter;
 import com.example.model.entity.UserInfo;
 
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -36,6 +40,7 @@ public class UserFragment extends Fragment  implements DeviceInfoPresenter.IDevi
     private DeviceInfoPresenterImpl deviceInfoPresenter = null;
     private RecyclerView recyclerView;
     private UserAdapter adapter;
+    private ProgressDialog progressDialog;
 
     @Nullable
     @Override
@@ -50,6 +55,12 @@ public class UserFragment extends Fragment  implements DeviceInfoPresenter.IDevi
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         deviceInfoPresenter = new DeviceInfoPresenterImpl(this);
+        progressDialog = new ProgressDialog(getContext());
+        progressDialog.setMessage("获取机房数据中");
+        progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+        progressDialog.setCancelable(false);
+
+
           List<UserInfo> list = getUserInfos();
           Log.e("tag44444",list.get(0).getLocation());
           recyclerView = (RecyclerView) getActivity().findViewById(R.id.cardLayout);
@@ -63,6 +74,7 @@ public class UserFragment extends Fragment  implements DeviceInfoPresenter.IDevi
                   Toast.makeText(getContext(),tag,Toast.LENGTH_SHORT).show();
 //                  MainActivity.deviceFragment = new DeviceFragment();
 //                  MainActivity.tb.switchContent(MainActivity.deviceFragment);
+                    progressDialog.show();
                     deviceInfoPresenter.getDeviceInfo(Integer.parseInt(tag));
 
               }
@@ -127,9 +139,12 @@ public class UserFragment extends Fragment  implements DeviceInfoPresenter.IDevi
            return list;
     }
 
-    @Override
-    public void onSuccess(String deviceInfo) {
 
+
+    @Override
+    public void onSuccess(List<String> deviceInfo, List<String> detailInfo) {
+          progressDialog.dismiss();
+          //Toast.makeText(getContext(),"成功取得数据",Toast.LENGTH_SHORT).show();
     }
 
     @Override

@@ -23,9 +23,8 @@ public class LoginModelImpl implements LoginModel {
          st.socket_mode = 0x1;
          st.start();
          try {
-            st.join();
+             st.join();
              if(st.gdtm_id.length!=0){
-
                  onLoginListener.onSuccess(st.gdtm_id,st.gdtm_info);
                  Log.e("userInfo",st.gdtm_info[0]);
              }else{

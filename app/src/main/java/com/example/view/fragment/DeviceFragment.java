@@ -11,6 +11,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -57,7 +58,7 @@ import static com.example.utils.TimeUtils.transform2;
 /**
  * Created by gaofeng on 2017/2/11.
  */
-public class DeviceFragment extends Fragment implements DeviceInfoPresenter.IDeviceView{
+public class DeviceFragment extends Fragment{
 
     private List<DeviceInfo> deviceInfos = new ArrayList<>();
     private DeviceAdapter deviceAdapter;
@@ -211,15 +212,7 @@ public class DeviceFragment extends Fragment implements DeviceInfoPresenter.IDev
         return String.valueOf(a);
     }
 
-    @Override
-    public void onSuccess(String deviceInfo) {
 
-    }
-
-    @Override
-    public void onFailure(String error) {
-
-    }
 }
 
 
