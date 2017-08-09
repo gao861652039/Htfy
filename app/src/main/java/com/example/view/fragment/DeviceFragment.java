@@ -23,6 +23,7 @@ import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.example.model.entity.ChartEntity;
 import com.example.presenter.impl.DeviceInfoPresenterImpl;
 import com.example.presenter.inter.DeviceInfoPresenter;
 import com.example.utils.tab.PopupWindows;
@@ -47,9 +48,10 @@ import static com.example.utils.MachineUtils.getAlarmCode;
 import static com.example.utils.MachineUtils.sxId;
 import static com.example.utils.MachineUtils.sxMsgType;
 import static com.example.utils.TimeUtils.beginFormat;
+import static com.example.utils.TimeUtils.disContent;
 import static com.example.utils.TimeUtils.endFormat;
 import static com.example.utils.TimeUtils.getBeforeForm;
-import static com.example.utils.TimeUtils.getBeforeMonth;
+import static com.example.utils.TimeUtils.getBeforeWeek;
 import static com.example.utils.TimeUtils.getPresentMonth;
 import static com.example.utils.TimeUtils.sameDate;
 import static com.example.utils.TimeUtils.transform;
@@ -59,21 +61,17 @@ import static com.example.utils.TimeUtils.transform2;
  * Created by gaofeng on 2017/2/11.
  */
 public class DeviceFragment extends Fragment{
-
+    private ArrayList<ChartEntity> info = new ArrayList<>();
+    private ArrayList<ChartEntity> chartEntities = new ArrayList<>();
     private List<DeviceInfo> deviceInfos = new ArrayList<>();
     private DeviceAdapter deviceAdapter;
-    private ProgressDialog progressDialog = null;
-    private Date date_start = null;
-    private Date date_end = null;
-    private List<String> list = new ArrayList<>();
-    private StringBuilder sb = new StringBuilder(1024 * 1024);
-    private int id;
     private RecyclerView recyclerView;
-    private  PopupWindows pw;
-    @BindView(R.id.bt)
-    Button bt;
-    @BindView(R.id.bt2)
-    Button bt2;
+    private  PopupWindows pw_start;
+    private  PopupWindows pw_end;
+    private Button bt;
+    private Button bt2;
+    private String start_date;
+    private String end_date;
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -89,50 +87,103 @@ public class DeviceFragment extends Fragment{
         ButterKnife.bind(getActivity());
         bt = (Button) getActivity().findViewById(R.id.bt);
         bt2 = (Button) getActivity().findViewById(R.id.bt2);
-        bt.setText("起始日期\n" + beginFormat(getBeforeMonth()));
+        bt.setText("起始日期\n" + beginFormat(getBeforeWeek()));
         bt2.setText("结束日期\n" + endFormat(getPresentMonth()));
+        handleDeviceInfo(getDeviceInfo());
+        handDetailInfo(getDetailInfo());
+        recyclerView = (RecyclerView) getActivity().findViewById(R.id.cardLayout2);
+        GridLayoutManager layoutManager = new GridLayoutManager(getActivity(), 1);
+        recyclerView.setLayoutManager(layoutManager);
+        deviceAdapter = new DeviceAdapter(deviceInfos);
+        recyclerView.setAdapter(deviceAdapter);
+
         bt.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                pw = new PopupWindows(getContext(),v);
+                pw_start = PopupWindows.getInstance(getContext(),v);
+                start_date = pw_start.getDate();
             }
         });
         bt2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                pw = new PopupWindows(getContext(),v);
+                pw_end = PopupWindows.getInstance(getContext(),v);
+                end_date = pw_end.getDate();
+
+
+
+
+
+
             }
         });
-        recyclerView = (RecyclerView) getActivity().findViewById(R.id.cardLayout2);
-        GridLayoutManager layoutManager = new GridLayoutManager(getActivity(), 1);
-        recyclerView.setLayoutManager(layoutManager);
+
+
+
     }
 
+    //处理C2以外指令
+    public void handleDeviceInfo(List<String> deviceInfo){
 
+           for(String str:deviceInfo){
 
+               String[] info = str.split("\\|");
+               String time = info[0].split("\\$")[1];
+               String alarmInfo = info[1];
+               String deviceId = info[2];
+               if(str.contains("C0") || str.contains("C1")){
+                   String sx = info[info.length-1];
+                   handleSxMessage(time,alarmInfo,sx);
+               }
 
-
-
-
-
-
-
-
-
-    //得到机房Id
-    public String getGdtmId() {
-        String gdtm = null;
-        try {
-            gdtm = getArguments().getString("gdtm_id");
-            return gdtm;
-        } catch (NullPointerException e) {
-
-            progressDialog.dismiss();
-            dialog();
-
+               if(str.contains("CT") || str.contains("CE")){
+                   String param = info[3];
+                   handleAlarmInfo(time,alarmInfo,deviceId,param);
+               }
+           }
+    }
+    //处理C2指令
+    public void handDetailInfo(List<String> detailInfo){
+        for(String str:detailInfo){
+            String[] info = str.split("\\|");
+            String time = info[0].split("\\$")[1];
+            String alarmInfo = info[1];
+            String deviceId = info[2];
+            String ph = info[3];
+            String orp = info[4];
+            String yxl = info[5];
+            String dl = info[6];
+            String djc= info[7];
+            String yb= info[8];
+            handleUpLoadMsg(time,deviceId,alarmInfo,new DataInfo(ph,orp,yxl,dl,djc,yb));
         }
-        return gdtm;
     }
+
+
+
+    //得到制水机组以外的数据
+    public List<String> getDeviceInfo(){
+        try {
+            List<String> deviceInfo = getArguments().getStringArrayList("deviceInfo");
+            return deviceInfo;
+        }catch (NullPointerException e){
+            dialog();
+        }
+        return null;
+    }
+    //得到制水机组数据
+    public List<String> getDetailInfo(){
+        try {
+            List<String> detailInfo = getArguments().getStringArrayList("detailInfo");
+            return detailInfo;
+        }catch (NullPointerException e){
+            dialog();
+        }
+        return null;
+    }
+
+
+
 
     //没有机房信息时显示弹窗
     public void dialog() {
@@ -172,8 +223,8 @@ public class DeviceFragment extends Fragment{
             String yansx = sx.substring(4, 5);
             String jbx = sx.substring(5, 6);
 
-            deviceInfos.add(new DeviceInfo(TimeUtils.disContent(time), "系统信息:" + MachineUtils.getAlarmCode(alarmInfo),
-                    "原水箱:" + sxMsgType(ysx) +
+            deviceInfos.add(new DeviceInfo(disContent(time), "系统信息:" + MachineUtils.getAlarmCode(alarmInfo),
+                            "原水箱:" + sxMsgType(ysx) +
                             "纯水箱:" + sxMsgType(csx) +
                             "酸水箱:" + sxMsgType(ssx) + "\n" +
                             "碱水箱:" + sxMsgType(jsx) +
@@ -186,24 +237,30 @@ public class DeviceFragment extends Fragment{
     public void handleAlarmInfo(String time, String alarmInfo, String deviceId, String param) {
         if ((!"".equals(param)) && param != null) {
             if ("CE".equals(alarmInfo)) {
-                deviceInfos.add(new DeviceInfo(TimeUtils.disContent(time), getAlarmCode(alarmInfo),
+                deviceInfos.add(new DeviceInfo(disContent(time), getAlarmCode(alarmInfo),
                         deviceId + "号机" + MachineUtils.getZsjError(param), true));
             } else {
-                deviceInfos.add(new DeviceInfo(TimeUtils.disContent(time), getAlarmCode(alarmInfo),
-                        sxId(deviceId) + MachineUtils.getSxError(param), true));
+                deviceInfos.add(new DeviceInfo(disContent(time), getAlarmCode(alarmInfo),
+                        sxId(deviceId)+  "号机" + MachineUtils.getSxError(param), true));
             }
         }
 
     }
 
     //处理上传数据信息
-    public void handleUpLoadMsg(String time, String alarmInfo, DataInfo dataInfo) {
+    public void handleUpLoadMsg(String time,String deviceId ,String alarmInfo, DataInfo dataInfo) {
 
         if (dataInfo != null) {
-            deviceInfos.add(new DeviceInfo(TimeUtils.disContent(time), getAlarmCode(alarmInfo),
+            deviceInfos.add(new DeviceInfo(disContent(time), getAlarmCode(alarmInfo),
                     "[PH:" + handlePH(dataInfo.getPh()) + "]" +
                             "[ORP:" + dataInfo.getOrp() + "mv]" +
                             "[有效氯:" + dataInfo.getYxl() + "mg/L]", false));
+            chartEntities.add(new ChartEntity(deviceId
+                    ,disContent(time)
+                    ,transToFloat(handlePH(dataInfo.getPh()))
+                    ,transToFloat(dataInfo.getOrp())
+                    ,transToFloat(dataInfo.getYxl())));
+            setter(chartEntities);
         }
     }
 
@@ -211,7 +268,19 @@ public class DeviceFragment extends Fragment{
         float a = (Float.parseFloat(ph)) / 10;
         return String.valueOf(a);
     }
+    //将String转换为float
+    public float transToFloat(String s){
+        float a  = Float.parseFloat(s);
+        return a;
+    }
 
+    public void setter(ArrayList<ChartEntity> list){
+
+        this.info = list;
+    }
+    public ArrayList<ChartEntity> getter(){
+        return this.info;
+    }
 
 }
 

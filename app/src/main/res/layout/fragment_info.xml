@@ -1,49 +1,66 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/bg_color"
-    android:orientation="vertical">
+    xmlns:chart="http://schemas.android.com/apk/res-auto"
+
+
+    >
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical">
         <Button
-            android:id="@+id/selectType"
+            android:id="@+id/select_zsj"
             style="@style/common_button_style"
             android:layout_marginLeft="@dimen/activity_horizontal_margin"
             android:layout_marginRight="@dimen/activity_horizontal_margin"
             android:layout_marginTop="@dimen/activity_vertical_margin"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="图表类型选择"
-            />
+            android:text="选择制水机编号"/>
+     <TextView
+         android:layout_width="match_parent"
+         android:layout_height="wrap_content"
+         android:textSize="20dp"
+         android:text="PH"/>
+        <com.db.chart.view.LineChartView
+            android:id="@+id/linechart1"
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            android:paddingBottom="12dp"
+            android:paddingLeft="12dp"
+            android:paddingRight="12dp"
+            chart:chart_axisColor="#30547d99"/>
         <TextView
-            android:id="@+id/currentMsg"
-            android:layout_marginLeft="@dimen/activity_horizontal_margin"
-            android:layout_marginRight="@dimen/activity_horizontal_margin"
-            android:layout_marginTop="@dimen/activity_vertical_margin"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textSize="20dp"
-            />
+            android:text="ORP 单位：mv"/>
+        <com.db.chart.view.LineChartView
+            android:id="@+id/linechart2"
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            android:paddingBottom="12dp"
+            android:paddingLeft="12dp"
+            android:paddingRight="12dp"
+            chart:chart_axisColor="#30547d99"/>
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="20dp"
+            android:text="有效氯 单位：mg/L"/>
+        <com.db.chart.view.LineChartView
+            android:id="@+id/linechart3"
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            android:paddingBottom="12dp"
+            android:paddingLeft="12dp"
+            android:paddingRight="12dp"
+            chart:chart_axisColor="#30547d99"/>
 
     </LinearLayout>
 
-    <tech.linjiang.suitlines.SuitLines
-        xmlns:line="http://schemas.android.com/apk/res-auto"
-        android:layout_gravity="center_horizontal"
-        android:id="@+id/suitlines"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        line:xySize="14"
-        line:xyColor="@color/colorAccent"
-        line:needEdgeEffect="true"
-        line:colorEdgeEffect="@color/colorPrimaryDark"
-        line:needClickHint="true"
-        line:colorHint="@color/colorPrimary"
-        line:maxOfVisible="10"
-        line:countOfY="15"
-        />
 
-</LinearLayout>
+
+</ScrollView>

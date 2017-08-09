@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -72,8 +73,7 @@ public class UserFragment extends Fragment  implements DeviceInfoPresenter.IDevi
               @Override
               public void onItemClick(View v, String tag) {
                   Toast.makeText(getContext(),tag,Toast.LENGTH_SHORT).show();
-//                  MainActivity.deviceFragment = new DeviceFragment();
-//                  MainActivity.tb.switchContent(MainActivity.deviceFragment);
+
                     progressDialog.show();
                     deviceInfoPresenter.getDeviceInfo(Integer.parseInt(tag));
 
@@ -144,7 +144,19 @@ public class UserFragment extends Fragment  implements DeviceInfoPresenter.IDevi
     @Override
     public void onSuccess(List<String> deviceInfo, List<String> detailInfo) {
           progressDialog.dismiss();
-          //Toast.makeText(getContext(),"成功取得数据",Toast.LENGTH_SHORT).show();
+          if(  MainActivity.deviceFragment == null){
+            MainActivity.deviceFragment = new DeviceFragment();
+          }else{
+              FragmentManager manager = getFragmentManager();
+              manager.beginTransaction().remove(MainActivity.deviceFragment).commitAllowingStateLoss();
+              MainActivity.deviceFragment = new DeviceFragment();
+          }
+
+          Bundle bundle = new Bundle();
+          bundle.putStringArrayList("deviceInfo", (ArrayList<String>) deviceInfo);
+          bundle.putStringArrayList("detailInfo", (ArrayList<String>) detailInfo);
+          MainActivity.deviceFragment.setArguments(bundle);
+          MainActivity.tb.switchContent(MainActivity.deviceFragment);
     }
 
     @Override

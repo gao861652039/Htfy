@@ -45,6 +45,7 @@ dependencies {
     compile 'org.greenrobot:eventbus:3.0.0'
     provided 'org.glassfish:javax.annotation:10.0-b28' //解决获取不到@Subscribe注解的问题
     compile 'com.jakewharton:butterknife:8.0.1'
+    compile 'com.diogobernardino:williamchart:2.5.0'
     apt 'com.jakewharton:butterknife-compiler:8.0.0'
 }
 

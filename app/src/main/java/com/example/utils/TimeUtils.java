@@ -10,11 +10,11 @@ import java.util.Date;
  */
 
 public class TimeUtils {
-    //得到前一个月的时间
-    public static Date getBeforeMonth() {
+    //得到前一个zhou的时间
+    public static Date getBeforeWeek() {
 
         Calendar calendar = Calendar.getInstance();
-        calendar.add(Calendar.MONTH, -1);    //得到前一个月
+        calendar.add(Calendar.DAY_OF_WEEK, -7);    //得到前一zhou
         return calendar.getTime();
 
     }
@@ -54,7 +54,7 @@ public class TimeUtils {
     }
     //按一定格式得到前一个月日期的输出
     public static  String getBeforeForm() {
-        Date d = getBeforeMonth();
+        Date d = getBeforeWeek();
         String str = null;
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyyMMdd");
         str = simpleDateFormat.format(d);
@@ -73,9 +73,9 @@ public class TimeUtils {
     //转换起始日期格式
     public static String beginFormat(Date bTime){
 
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy年MM月dd日HH点");
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy年MM月dd日");
         String str = simpleDateFormat.format(bTime);
-        return  str;
+        return  str+"0点";
     }
 
 
@@ -101,4 +101,20 @@ public class TimeUtils {
         }
         return null;
     }
+    //按yyyyMMddHHmm输出
+    public static String start_date(){
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
+            String str = sdf.format(getBeforeWeek());
+            return str+"0000";
+    }
+
+    public static String end_date(){
+        Calendar calendar = Calendar.getInstance();
+        Date date = calendar.getTime();
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmm");
+        String str = sdf.format(date);
+        return str;
+    }
+
+
 }

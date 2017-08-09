@@ -18,8 +18,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class PopupWindows extends PopupWindow {
+    private static PopupWindows instance;
     private String date = null;// 设置默认选中的日期  格式为 “2014-04-05” 标准DATE格式
-        public PopupWindows(Context mContext, View parent) {
+        private PopupWindows(){
+
+        }
+        private PopupWindows(Context mContext, View parent) {
 
             View view = View.inflate(mContext, R.layout.popupwindow_calendar,
                     null);
@@ -127,8 +131,20 @@ public class PopupWindows extends PopupWindow {
                     .setOnClickListener(new View.OnClickListener() {
 
                         public void onClick(View v) {
+
                               dismiss();
                         }
                     });
+        }
+
+        public static PopupWindows getInstance(Context mContext, View parent){
+           if(instance == null){
+               instance = new PopupWindows(mContext,parent);
+           }
+           return instance;
+        }
+
+        public String getDate(){
+            return this.date;
         }
     }

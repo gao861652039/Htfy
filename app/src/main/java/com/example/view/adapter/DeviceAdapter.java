@@ -7,6 +7,7 @@ import android.support.v7.widget.RecyclerView;
 import android.text.Spannable;
 import android.text.SpannableStringBuilder;
 import android.text.style.ForegroundColorSpan;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -51,15 +52,16 @@ public class DeviceAdapter extends RecyclerView.Adapter<DeviceAdapter.ViewHolder
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
 
-        DeviceInfo deviceInfo = mDeviceInfo.get(position);
-
+            DeviceInfo deviceInfo = mDeviceInfo.get(position);
             SpannableStringBuilder builder = new SpannableStringBuilder(deviceInfo.getOtherInfo());
            // ForegroundColorSpan redSpan =  new ForegroundColorSpan(Color.RED);
             String str = deviceInfo.getOtherInfo().toString();
             ArrayList<Integer>  bsw = new ArrayList<>();
             ArrayList<Integer>  jjw = new ArrayList<>();
-            StringUtils.getIndexOf(str.toCharArray(),"补水位".toCharArray(),0,bsw);
-            StringUtils.getIndexOf(str.toCharArray(),"警戒位".toCharArray(),0,jjw);
+            if(deviceInfo.getFlag()==false){
+                StringUtils.getIndexOf(str.toCharArray(),"补水位".toCharArray(),0,bsw);
+                StringUtils.getIndexOf(str.toCharArray(),"警戒位".toCharArray(),0,jjw);
+            }
             if(bsw.size()!=0) {
                for (int i = 0; i < bsw.size(); i++) {
                    builder.setSpan(new ForegroundColorSpan(Color.RED), bsw.get(i), bsw.get(i) + 3, Spannable.SPAN_EXCLUSIVE_INCLUSIVE);

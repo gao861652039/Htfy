@@ -1,5 +1,7 @@
 package com.example.utils;
 
+import android.util.Log;
+
 /**
  * Created by 高峰 on 2017/6/26.
  */
@@ -48,6 +50,8 @@ public class MachineUtils {
                     return "水箱组报警信息";
                 case "C6":
                     return "系统启动";
+                case "CY":
+                     return "制水机空闲";
                 default:
                     return null;
             }
@@ -77,8 +81,9 @@ public class MachineUtils {
 
     //得到水箱故障
     public static String getSxError(String error){
-        String str = Integer.toHexString(Integer.parseInt(error));
-        switch (str){
+//        String str = Integer.toHexString(Integer.parseInt(error));
+//        Log.e("error",str);
+        switch (error){
             case "ZZ":
                 return "未设置传感器";
             case "ff":
