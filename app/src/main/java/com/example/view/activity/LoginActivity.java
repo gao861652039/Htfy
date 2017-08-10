@@ -11,6 +11,7 @@ import android.widget.Toast;
 
 import com.example.presenter.inter.LoginPresenter;
 import com.example.presenter.impl.LoginPresenterImpl;
+import com.example.utils.ActivityManager;
 
 
 public class LoginActivity extends AppCompatActivity implements LoginPresenter.IloginView{
@@ -27,6 +28,7 @@ public class LoginActivity extends AppCompatActivity implements LoginPresenter.I
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.login);
+        ActivityManager.addActivity(this,"b");
         progressDialog = new ProgressDialog(this);
         loginPresenter = new LoginPresenterImpl(this);
         pref = getSharedPreferences("data", MODE_PRIVATE);

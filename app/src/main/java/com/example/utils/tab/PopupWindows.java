@@ -150,6 +150,7 @@ public class PopupWindows extends PopupWindow {
                                 if(date == null){
                                     date = new SimpleDateFormat("yyyy-MM-dd").format(calendar.getTime());
                                     DeviceFragment.end_date = date;
+
                                 }else{
                                     DeviceFragment.end_date = date;
                                     EventBus.getDefault().postSticky(Flag.GETDATESUCCESS);
@@ -162,7 +163,5 @@ public class PopupWindows extends PopupWindow {
         }
 
 
-        public String getDate(){
-            return this.date;
-        }
+
     }

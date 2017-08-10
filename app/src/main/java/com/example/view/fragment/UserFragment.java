@@ -1,6 +1,7 @@
 package com.example.view.fragment;
 
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 
@@ -16,8 +17,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import com.example.model.impl.LoginModelImpl;
 import com.example.presenter.impl.DeviceInfoPresenterImpl;
 import com.example.presenter.inter.DeviceInfoPresenter;
+import com.example.utils.Flag;
 import com.example.view.activity.MainActivity;
 import com.example.view.activity.R;
 import com.example.view.adapter.UserAdapter;
@@ -43,6 +46,7 @@ public class UserFragment extends Fragment  implements DeviceInfoPresenter.IDevi
     private UserAdapter adapter;
     private ProgressDialog progressDialog;
     private String flag = null;
+    private UserFragment context;
 
     @Nullable
     @Override
@@ -73,15 +77,25 @@ public class UserFragment extends Fragment  implements DeviceInfoPresenter.IDevi
           adapter.setOnItemClickListener(new UserAdapter.onRecyclerViewItemClickListener() {
               @Override
               public void onItemClick(View v, String tag) {
-                  Toast.makeText(getContext(),tag,Toast.LENGTH_SHORT).show();
+                        if(MainActivity.deviceFragment!=null){
+                            FragmentManager fragmentManager = getFragmentManager();
+                            fragmentManager.beginTransaction()
+                                    .remove(MainActivity.deviceFragment)
+                                    .commitAllowingStateLoss();
+                        }
+                        progressDialog.show();
+                        deviceInfoPresenter.getDeviceInfo(Integer.parseInt(tag));
+                        flag = tag;
+                   }
 
-                    progressDialog.show();
-                    deviceInfoPresenter.getDeviceInfo(Integer.parseInt(tag));
-                    flag = tag;
-              }
           });
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+
+    }
 
     public void dialog(){
         final MaterialDialog mMaterialDialog = new MaterialDialog(getActivity());
@@ -145,14 +159,7 @@ public class UserFragment extends Fragment  implements DeviceInfoPresenter.IDevi
     @Override
     public void onSuccess(List<String> deviceInfo, List<String> detailInfo) {
           progressDialog.dismiss();
-          if(  MainActivity.deviceFragment == null){
-            MainActivity.deviceFragment = new DeviceFragment();
-          }else{
-              FragmentManager manager = getFragmentManager();
-              manager.beginTransaction().remove(MainActivity.deviceFragment).commitAllowingStateLoss();
-              MainActivity.deviceFragment = new DeviceFragment();
-          }
-
+          MainActivity.deviceFragment = new DeviceFragment();
           Bundle bundle = new Bundle();
           bundle.putStringArrayList("deviceInfo", (ArrayList<String>) deviceInfo);
           bundle.putStringArrayList("detailInfo", (ArrayList<String>) detailInfo);

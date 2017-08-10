@@ -12,17 +12,17 @@ public class MachineUtils {
     public static String getDeviceName(String name) {
         if (!"".equals(name) && name != null) {
             switch (name) {
-                case "0":
-                    return "原水箱";
                 case "1":
-                    return "纯水箱";
+                    return "原水箱";
                 case "2":
-                    return "酸水箱";
+                    return "纯水箱";
                 case "3":
-                    return "碱水箱";
+                    return "酸水箱";
                 case "4":
-                    return "盐水箱";
+                    return "碱水箱";
                 case "5":
+                    return "盐水箱";
+                case "6":
                     return "搅拌箱";
                 case "SYS":
                     return "系统设备";
@@ -81,17 +81,30 @@ public class MachineUtils {
 
     //得到水箱故障
     public static String getSxError(String error){
-//        String str = Integer.toHexString(Integer.parseInt(error));
-//        Log.e("error",str);
-        switch (error){
-            case "ZZ":
-                return "未设置传感器";
-            case "ff":
-                return "信号故障";
-            case "0":
-                return "低水位报警";
-            default:
-                return null;
+        String str = Integer.toHexString(Integer.parseInt(error));
+        Log.e("error",str);
+        if(str!=null) {
+            switch (str) {
+                case "ZZ":
+                    return "未设置传感器";
+                case "ff":
+                    return "信号故障";
+                case "0":
+                    return "低水位报警";
+                default:
+                    return null;
+            }
+        }else {
+            switch (error) {
+                case "ZZ":
+                    return "未设置传感器";
+                case "ff":
+                    return "信号故障";
+                case "0":
+                    return "低水位报警";
+                default:
+                    return null;
+            }
         }
     }
 
@@ -115,17 +128,17 @@ public class MachineUtils {
     //水箱ID
     public static String sxId(String sxId){
         switch (sxId){
-            case "0":
-                return "原水箱";
             case "1":
-                return "纯水箱";
+                return "原水箱";
             case "2":
-                return "酸水箱";
+                return "纯水箱";
             case "3":
-                return "碱水箱";
+                return "酸水箱";
             case "4":
-                return "盐水箱";
+                return "碱水箱";
             case "5":
+                return "盐水箱";
+            case "6":
                 return "搅拌箱";
             default:
                 return null;

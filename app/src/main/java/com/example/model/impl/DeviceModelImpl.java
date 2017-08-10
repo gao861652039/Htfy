@@ -41,21 +41,25 @@ public class DeviceModelImpl implements DeviceModel {
         st.gdtm_start_date = TimeUtils.start_date();     //7天的数据
         st.gdtm_end_date = TimeUtils.end_date();       //7天的数据
         LoginModelImpl.flag = Flag.GETDATA;
+
         st.start();
 
     }
 
     @Subscribe(threadMode = ThreadMode.ASYNC,sticky = true)
     public void test(String event){
+
         try {
+
             if(event.equals(Flag.GETDATA)) {
+                Log.e("tag","----------");
                 deviceInfo = GetGdtmInfoUtils.getDeviceInfo(st.gdtm_data);
                 detailInfo = GetGdtmInfoUtils.getDetailInfo(st.gdtm_data);
-                EventBus.getDefault().unregister(this);
                 listener.onSuccess(deviceInfo, detailInfo);
             }
         }catch (NullPointerException e){
              listener.onFailure("获取数据失败");
+
         }
     }
 

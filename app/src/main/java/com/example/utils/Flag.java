@@ -10,4 +10,5 @@ public class Flag {
     public static final String GETDATA="GETDATA";
     public static final String GETDATAAGAIN="GETDATAAGAIN";
     public static final String GETDATESUCCESS="GETDATESUCCESS";
+    public static final String SUCCESS="SUCCESS";
 }

@@ -446,6 +446,7 @@ public class SocketThread extends Thread {
                 return;
             socket_state = 0x0;
             EventBus.getDefault().postSticky(LoginModelImpl.flag);
+            Log.e("tag",LoginModelImpl.flag);
             return;
         }
     }

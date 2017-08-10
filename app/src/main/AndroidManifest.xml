@@ -28,25 +28,19 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:replace="android:label">
-        <activity android:name=".LoginActivity">
-            <intent-filter>
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
+        <activity android:name=".LoginActivity"
+            android:configChanges="keyboardHidden|orientation">
         </activity>
-        <activity android:name=".MainActivity"></activity>
-        <activity android:name=".SplashActivity">
+        <activity android:name=".MainActivity"
+            android:configChanges="keyboardHidden|orientation"></activity>
+        <activity android:name=".SplashActivity"
+            android:configChanges="keyboardHidden|orientation">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-  <service android:name="com.example.service.MyService"
-      android:enabled="true"
-      android:exported="true">
-  </service>
-
-
 
 
 

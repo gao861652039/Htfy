@@ -7,6 +7,7 @@ import android.support.v4.app.FragmentManager;
 import android.view.KeyEvent;
 import android.widget.Toast;
 
+import com.example.utils.ActivityManager;
 import com.example.view.fragment.DeviceFragment;
 import com.example.view.fragment.InfoFragment;
 import com.example.view.fragment.SettingFragment;
@@ -92,7 +93,8 @@ public class MainActivity extends FragmentActivity implements BottomTabBar.OnSel
                     firstTime = secondTime;
                     return true;
                 } else {
-
+                    ActivityManager.removeAllActivity();
+                    this.finish();
                     System.exit(0);
                 }
                 break;

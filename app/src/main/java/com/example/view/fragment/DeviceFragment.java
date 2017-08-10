@@ -35,6 +35,7 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
+import java.sql.Time;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -50,6 +51,7 @@ import static com.example.utils.TimeUtils.endFormat;
 
 import static com.example.utils.TimeUtils.getBeforeWeek;
 import static com.example.utils.TimeUtils.getPresentMonth;
+import static com.example.utils.TimeUtils.transform2;
 
 
 /**
@@ -71,13 +73,14 @@ public class DeviceFragment extends Fragment implements DeviceInfoPresenter.IDev
     public static String end_date;
     private String sel;
     private ProgressDialog progressDialog;
+    private List<String> deviceInfo;
+    private List<String> detailInfo;
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
-        EventBus.getDefault().register(this);
-        System.out.println("onCreateView");
+        Log.e("onCreateView","onCreateView");
         View view = inflater.inflate(R.layout.fragment_dev, container, false);
         return view;
     }
@@ -85,6 +88,8 @@ public class DeviceFragment extends Fragment implements DeviceInfoPresenter.IDev
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+        Log.e("onActivityCreated","onActivityCreated");
+        EventBus.getDefault().register(this);
         progressDialog = new ProgressDialog(getContext());
         progressDialog.setMessage("正在筛选数据");
         progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
@@ -108,7 +113,6 @@ public class DeviceFragment extends Fragment implements DeviceInfoPresenter.IDev
             public void onClick(View v) {
                 pw_start = new PopupWindows(getContext(), v);
 
-
             }
         });
         bt2.setOnClickListener(new View.OnClickListener() {
@@ -127,6 +131,10 @@ public class DeviceFragment extends Fragment implements DeviceInfoPresenter.IDev
     @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
     public void getDateEvent(String event) {
         if (event.equals(Flag.GETDATESUCCESS)) {
+            Log.e("timeUtils",TimeUtils.toStart(start_date));
+            bt.setText("起始日期\n" + beginFormat(transform2(start_date)));
+            bt2.setText("结束日期\n" + endFormat(transform2(end_date)));
+
             int flag = handleTimeRequest(TimeUtils.toStart(start_date), TimeUtils.toEnd(end_date));
             if (flag == 1) {
                 sortByTime(infosAfterSelected);
@@ -134,8 +142,19 @@ public class DeviceFragment extends Fragment implements DeviceInfoPresenter.IDev
                 deviceAdapter = new DeviceAdapter(infosAfterSelected);
                 recyclerView.setAdapter(deviceAdapter);
                 deviceAdapter.notifyDataSetChanged();
-                progressDialog.dismiss();
             }
+
+        }else if(event.equals(Flag.SUCCESS)){
+
+            deviceInfos.clear();
+            handleDeviceInfo(deviceInfo);
+            handDetailInfo(detailInfo);
+            sortByTime(deviceInfos);
+            deviceAdapter = new DeviceAdapter(deviceInfos);
+            recyclerView.setAdapter(deviceAdapter);
+            deviceAdapter.notifyDataSetChanged();
+            progressDialog.dismiss();
+
 
         }
     }
@@ -146,14 +165,12 @@ public class DeviceFragment extends Fragment implements DeviceInfoPresenter.IDev
         System.out.println(start);
         System.out.println(end);
 
-        if (true) {
+        if (start.compareTo(TimeUtils.start_date())>=0 && start.compareTo(TimeUtils.end_date())<=0 && end.compareTo(TimeUtils.end_date())<=0) {
             //对原数据按照时间进行筛选
-            Log.e("+++","++++++++++++++++++++");
-            progressDialog.show();
             infosAfterSelected.clear();
             for (int i = 0; i < deviceInfos.size(); i++) {
                 String time = deviceInfos.get(i).getTime();
-                if (time.compareTo(TimeUtils.disContent(TimeUtils.toStart(start))) >= 0 && time.compareTo(TimeUtils.disContent(TimeUtils.toEnd(end)))<=0) {
+                if (time.compareTo(TimeUtils.disContent(start)) >= 0 && time.compareTo(TimeUtils.disContent(end))<=0) {
                     infosAfterSelected.add(deviceInfos.get(i));
                 }
             }
@@ -161,6 +178,7 @@ public class DeviceFragment extends Fragment implements DeviceInfoPresenter.IDev
             return 1;
         } else {
             //重新进行网络请求
+            progressDialog.show();
             deviceRequestPresenter.getDeviceInfo(Integer.parseInt(sel), start_date, end_date);
             return 0;
         }
@@ -177,39 +195,44 @@ public class DeviceFragment extends Fragment implements DeviceInfoPresenter.IDev
 
     //处理C2以外指令
     public void handleDeviceInfo(List<String> deviceInfo) {
+      if(deviceInfo!=null) {
+          for (String str : deviceInfo) {
 
-        for (String str : deviceInfo) {
+              String[] info = str.split("\\|");
+              String time = info[0].split("\\$")[1];
+              String alarmInfo = info[1];
+              String deviceId = info[2];
+              if (str.contains("C0") || str.contains("C1") || str.contains("C6")) {
+                  String sx = info[9];
+                  handleSxMessage(time, alarmInfo, sx);
+              }
 
-            String[] info = str.split("\\|");
-            String time = info[0].split("\\$")[1];
-            String alarmInfo = info[1];
-            String deviceId = info[2];
-            if (str.contains("C0") || str.contains("C1")) {
-                String sx = info[info.length - 1];
-                handleSxMessage(time, alarmInfo, sx);
-            }
-
-            if (str.contains("CT") || str.contains("CE")) {
-                String param = info[3];
-                handleAlarmInfo(time, alarmInfo, deviceId, param);
-            }
-        }
+              if (str.contains("CT") || str.contains("CE")) {
+                  String param = info[3];
+                  handleAlarmInfo(time, alarmInfo, deviceId, param);
+              }
+          }
+      }
     }
 
     //处理C2指令
     public void handDetailInfo(List<String> detailInfo) {
-        for (String str : detailInfo) {
-            String[] info = str.split("\\|");
-            String time = info[0].split("\\$")[1];
-            String alarmInfo = info[1];
-            String deviceId = info[2];
-            String ph = info[3];
-            String orp = info[4];
-            String yxl = info[5];
-            String dl = info[6];
-            String djc = info[7];
-            String yb = info[8];
-            handleUpLoadMsg(time, deviceId, alarmInfo, new DataInfo(ph, orp, yxl, dl, djc, yb));
+
+        if(detailInfo!=null) {
+
+            for (String str : detailInfo) {
+                String[] info = str.split("\\|");
+                String time = info[0].split("\\$")[1];
+                String alarmInfo = info[1];
+                String deviceId = info[2];
+                String ph = info[3];
+                String orp = info[4];
+                String yxl = info[5];
+                String dl = info[6];
+                String djc = info[7];
+                String yb = info[8];
+                handleUpLoadMsg(time, deviceId, alarmInfo, new DataInfo(ph, orp, yxl, dl, djc, yb));
+            }
         }
     }
 
@@ -304,7 +327,7 @@ public class DeviceFragment extends Fragment implements DeviceInfoPresenter.IDev
                         deviceId + "号机" + MachineUtils.getZsjError(param), true));
             } else {
                 deviceInfos.add(new DeviceInfo(disContent(time), getAlarmCode(alarmInfo),
-                        sxId(deviceId) + "号机" + MachineUtils.getSxError(param), true));
+                        sxId(deviceId) + MachineUtils.getSxError(param), true));
             }
         }
 
@@ -347,15 +370,15 @@ public class DeviceFragment extends Fragment implements DeviceInfoPresenter.IDev
         return this.info;
     }
 
+
     @Override
     public void onSuccess(List<String> deviceInfo, List<String> detailInfo) {
-        deviceInfos.clear();
-        handleDeviceInfo(deviceInfo);
-        handDetailInfo(detailInfo);
-        sortByTime(deviceInfos);
-        deviceAdapter = new DeviceAdapter(deviceInfos);
-        recyclerView.setAdapter(deviceAdapter);
-        deviceAdapter.notifyDataSetChanged();
+
+        this.deviceInfo = deviceInfo;
+        this.detailInfo = detailInfo;
+        EventBus.getDefault().postSticky(Flag.SUCCESS);
+
+
     }
 
     @Override
