@@ -130,6 +130,7 @@ public class DeviceFragment extends Fragment implements DeviceInfoPresenter.IDev
             int flag = handleTimeRequest(TimeUtils.toStart(start_date), TimeUtils.toEnd(end_date));
             if (flag == 1) {
                 sortByTime(infosAfterSelected);
+                Log.e("length",""+infosAfterSelected.size());
                 deviceAdapter = new DeviceAdapter(infosAfterSelected);
                 recyclerView.setAdapter(deviceAdapter);
                 deviceAdapter.notifyDataSetChanged();
@@ -145,7 +146,7 @@ public class DeviceFragment extends Fragment implements DeviceInfoPresenter.IDev
         System.out.println(start);
         System.out.println(end);
 
-        if (start.compareTo(TimeUtils.start_date()) >= 0 && start.compareTo(TimeUtils.end_date()) <= 0 && end.compareTo(TimeUtils.end_date()) <= 0) {
+        if (true) {
             //对原数据按照时间进行筛选
             Log.e("+++","++++++++++++++++++++");
             progressDialog.show();
@@ -160,7 +161,6 @@ public class DeviceFragment extends Fragment implements DeviceInfoPresenter.IDev
             return 1;
         } else {
             //重新进行网络请求
-
             deviceRequestPresenter.getDeviceInfo(Integer.parseInt(sel), start_date, end_date);
             return 0;
         }
