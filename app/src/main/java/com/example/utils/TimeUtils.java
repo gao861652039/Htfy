@@ -116,5 +116,37 @@ public class TimeUtils {
         return str;
     }
 
+   //按照yyyyMMddHHmm输出指定字符串
+    public static String  toStart(String start){
+
+        try {
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
+            Date d = sdf.parse(start);
+            sdf =  new SimpleDateFormat("yyyyMMdd");
+            String str = sdf.format(d);
+            return str+"0000";
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return  null;
+    }
+
+    public static String  toEnd(String end){
+
+        try {
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
+            Date d = sdf.parse(end);
+            sdf =  new SimpleDateFormat("yyyyMMdd");
+            String str = sdf.format(d);
+            return str+"2359";
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return  null;
+
+
+    }
+
+
 
 }

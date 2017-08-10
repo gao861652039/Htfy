@@ -2,6 +2,10 @@ package com.example.utils.tab;
 
 import android.content.Context;
 import android.graphics.drawable.BitmapDrawable;
+import android.os.Handler;
+import android.os.Looper;
+import android.os.Message;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,18 +16,22 @@ import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.example.utils.Flag;
 import com.example.view.activity.R;
+import com.example.view.fragment.DeviceFragment;
 
+import org.greenrobot.eventbus.EventBus;
+
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 public class PopupWindows extends PopupWindow {
-    private static PopupWindows instance;
-    private String date = null;// 设置默认选中的日期  格式为 “2014-04-05” 标准DATE格式
-        private PopupWindows(){
 
-        }
-        private PopupWindows(Context mContext, View parent) {
+    private String date = null;// 设置默认选中的日期  格式为 “2014-04-05” 标准DATE格式
+
+        public PopupWindows(Context mContext, final View parent) {
 
             View view = View.inflate(mContext, R.layout.popupwindow_calendar,
                     null);
@@ -131,18 +139,28 @@ public class PopupWindows extends PopupWindow {
                     .setOnClickListener(new View.OnClickListener() {
 
                         public void onClick(View v) {
+                            Calendar calendar = Calendar.getInstance();
+                            if(parent.getId() == R.id.bt){
+                                if(date == null){
+                                    date = new SimpleDateFormat("yyyy-MM-dd").format(calendar.getTime());
+                                }
+                                DeviceFragment.start_date = date;
+
+                            }else if(parent.getId() == R.id.bt2){
+                                if(date == null){
+                                    date = new SimpleDateFormat("yyyy-MM-dd").format(calendar.getTime());
+                                    DeviceFragment.end_date = date;
+                                }else{
+                                    DeviceFragment.end_date = date;
+                                    EventBus.getDefault().postSticky(Flag.GETDATESUCCESS);
+                                }
+                            }
 
                               dismiss();
                         }
                     });
         }
 
-        public static PopupWindows getInstance(Context mContext, View parent){
-           if(instance == null){
-               instance = new PopupWindows(mContext,parent);
-           }
-           return instance;
-        }
 
         public String getDate(){
             return this.date;

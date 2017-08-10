@@ -2,6 +2,8 @@ package com.example.model.thread;
 
 import android.util.Log;
 
+import com.example.model.impl.LoginModelImpl;
+
 import org.greenrobot.eventbus.EventBus;
 
 import java.io.IOException;
@@ -443,7 +445,7 @@ public class SocketThread extends Thread {
             if (socketClose() != 0x0)
                 return;
             socket_state = 0x0;
-            EventBus.getDefault().postSticky("Success");
+            EventBus.getDefault().postSticky(LoginModelImpl.flag);
             return;
         }
     }

@@ -1,10 +1,12 @@
 package com.example.model.entity;
 
+import android.support.annotation.NonNull;
+
 /**
  * Created by 高峰 on 2017/2/12.
  */
 
-public class DeviceInfo {
+public class DeviceInfo implements Comparable<DeviceInfo>{
 
     private String time;
     private String alarminfo;
@@ -50,5 +52,16 @@ public class DeviceInfo {
 
     public void setFlag(boolean flag) {
         this.flag = flag;
+    }
+
+    @Override
+    public int compareTo(@NonNull DeviceInfo o) {
+        if(this.getTime().compareTo(o.getTime())<0){
+            return 1;
+        }else if(this.getTime().compareTo(o.getTime())==0){
+            return 0;
+        }else{
+            return -1;
+        }
     }
 }

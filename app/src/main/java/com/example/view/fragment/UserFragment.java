@@ -42,6 +42,7 @@ public class UserFragment extends Fragment  implements DeviceInfoPresenter.IDevi
     private RecyclerView recyclerView;
     private UserAdapter adapter;
     private ProgressDialog progressDialog;
+    private String flag = null;
 
     @Nullable
     @Override
@@ -76,7 +77,7 @@ public class UserFragment extends Fragment  implements DeviceInfoPresenter.IDevi
 
                     progressDialog.show();
                     deviceInfoPresenter.getDeviceInfo(Integer.parseInt(tag));
-
+                    flag = tag;
               }
           });
     }
@@ -155,6 +156,7 @@ public class UserFragment extends Fragment  implements DeviceInfoPresenter.IDevi
           Bundle bundle = new Bundle();
           bundle.putStringArrayList("deviceInfo", (ArrayList<String>) deviceInfo);
           bundle.putStringArrayList("detailInfo", (ArrayList<String>) detailInfo);
+          bundle.putString("sel",flag);
           MainActivity.deviceFragment.setArguments(bundle);
           MainActivity.tb.switchContent(MainActivity.deviceFragment);
     }
