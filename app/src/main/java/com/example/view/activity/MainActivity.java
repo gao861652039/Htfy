@@ -14,6 +14,7 @@ import com.example.view.fragment.SettingFragment;
 import com.example.view.fragment.UserFragment;
 import com.example.utils.tab.BarEntity;
 import com.example.utils.tab.BottomTabBar;
+import com.nanchen.crashmanager.UncaughtExceptionHandlerImpl;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,6 +32,7 @@ public class MainActivity extends FragmentActivity implements BottomTabBar.OnSel
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        UncaughtExceptionHandlerImpl.getInstance().init(this, BuildConfig.DEBUG, true, 0, MainActivity.class);
         initView();
 
     }

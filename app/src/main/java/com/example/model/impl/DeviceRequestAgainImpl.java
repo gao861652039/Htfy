@@ -1,7 +1,10 @@
 package com.example.model.impl;
 
+import android.util.Log;
+
 import com.example.model.inter.DeviceModel;
 import com.example.model.inter.DeviceRequsetAgainModel;
+import com.example.model.inter.LoginModel;
 import com.example.model.thread.SocketThread;
 import com.example.presenter.inter.OnDeviceInfoListener;
 import com.example.utils.Flag;
@@ -48,9 +51,9 @@ public class DeviceRequestAgainImpl implements DeviceRequsetAgainModel {
     public void test(String event) {
         try {
             if(event.equals(Flag.GETDATAAGAIN)) {
+                Log.e("???",event);
                 deviceInfo = GetGdtmInfoUtils.getDeviceInfo(st.gdtm_data);
                 detailInfo = GetGdtmInfoUtils.getDetailInfo(st.gdtm_data);
-                EventBus.getDefault().unregister(this);
                 listener.onSuccess(deviceInfo, detailInfo);
             }
         } catch (NullPointerException e) {

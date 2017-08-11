@@ -12,6 +12,7 @@ import android.widget.Toast;
 import com.example.presenter.inter.LoginPresenter;
 import com.example.presenter.impl.LoginPresenterImpl;
 import com.example.utils.ActivityManager;
+import com.nanchen.crashmanager.UncaughtExceptionHandlerImpl;
 
 
 public class LoginActivity extends AppCompatActivity implements LoginPresenter.IloginView{
@@ -29,6 +30,7 @@ public class LoginActivity extends AppCompatActivity implements LoginPresenter.I
         super.onCreate(savedInstanceState);
         setContentView(R.layout.login);
         ActivityManager.addActivity(this,"b");
+        UncaughtExceptionHandlerImpl.getInstance().init(this, BuildConfig.DEBUG, true, 0, LoginActivity.class);
         progressDialog = new ProgressDialog(this);
         loginPresenter = new LoginPresenterImpl(this);
         pref = getSharedPreferences("data", MODE_PRIVATE);
