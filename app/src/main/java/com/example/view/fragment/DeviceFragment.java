@@ -1,6 +1,8 @@
 package com.example.view.fragment;
 
 
+import android.app.FragmentManager;
+import android.app.FragmentTransaction;
 import android.app.ProgressDialog;
 import android.media.audiofx.LoudnessEnhancer;
 import android.os.Bundle;
@@ -75,6 +77,7 @@ public class DeviceFragment extends Fragment implements DeviceInfoPresenter.IDev
     private ProgressDialog progressDialog;
     private List<String> deviceInfo;
     private List<String> detailInfo;
+    private boolean flag = true;
 
     @Nullable
     @Override
@@ -86,9 +89,17 @@ public class DeviceFragment extends Fragment implements DeviceInfoPresenter.IDev
     }
 
     @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        //用来恢复数据
+
+    }
+
+    @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         Log.e("onActivityCreated","onActivityCreated");
+
         EventBus.getDefault().register(this);
         progressDialog = new ProgressDialog(getContext());
         progressDialog.setMessage("正在筛选数据");
@@ -98,7 +109,12 @@ public class DeviceFragment extends Fragment implements DeviceInfoPresenter.IDev
         bt2 = (Button) getActivity().findViewById(R.id.bt2);
         bt.setText("起始日期\n" + beginFormat(getBeforeWeek()));
         bt2.setText("结束日期\n" + endFormat(getPresentMonth()));
-        handleDeviceInfo(getDeviceInfo());
+        deviceInfo = getDeviceInfo();
+        detailInfo = getDetailInfo();
+        if( null == deviceInfo && null == detailInfo ){
+            dialog();
+        }
+        handleDeviceInfo( getDeviceInfo());
         handDetailInfo(getDetailInfo());
         sel = getSel();
         recyclerView = (RecyclerView) getActivity().findViewById(R.id.cardLayout2);
@@ -124,6 +140,7 @@ public class DeviceFragment extends Fragment implements DeviceInfoPresenter.IDev
             }
 
         });
+
 
 
     }
@@ -243,7 +260,7 @@ public class DeviceFragment extends Fragment implements DeviceInfoPresenter.IDev
             List<String> deviceInfo = getArguments().getStringArrayList("deviceInfo");
             return deviceInfo;
         } catch (NullPointerException e) {
-            dialog();
+            System.out.println(e.getMessage());
         }
         return null;
     }
@@ -254,7 +271,7 @@ public class DeviceFragment extends Fragment implements DeviceInfoPresenter.IDev
             List<String> detailInfo = getArguments().getStringArrayList("detailInfo");
             return detailInfo;
         } catch (NullPointerException e) {
-            dialog();
+            System.out.println(e.getMessage());
         }
         return null;
     }
@@ -265,7 +282,7 @@ public class DeviceFragment extends Fragment implements DeviceInfoPresenter.IDev
             String str = getArguments().getString("sel");
             return str;
         } catch (NullPointerException e) {
-            dialog();
+            System.out.println(e.getMessage());
         }
         return null;
     }
@@ -273,6 +290,8 @@ public class DeviceFragment extends Fragment implements DeviceInfoPresenter.IDev
 
     //没有机房信息时显示弹窗
     public void dialog() {
+
+
         final MaterialDialog mMaterialDialog = new MaterialDialog(getActivity());
         mMaterialDialog.setTitle("警告")
                 .setMessage("请先选择机房信息")
@@ -280,20 +299,30 @@ public class DeviceFragment extends Fragment implements DeviceInfoPresenter.IDev
                     @Override
                     public void onClick(View v) {
                         mMaterialDialog.dismiss();
-                        MainActivity.manager.beginTransaction().remove(MainActivity.deviceFragment).commit();
+                        android.support.v4.app.FragmentManager fm = getFragmentManager();
+                        fm.beginTransaction()
+                                .remove(MainActivity.deviceFragment)
+                                .commitAllowingStateLoss();
                         MainActivity.tb.switchContent(MainActivity.userFragment);
+                        MainActivity.deviceFragment=null;
+
                     }
                 })
                 .setNegativeButton("取消", new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
                         mMaterialDialog.dismiss();
-                        MainActivity.manager.beginTransaction().remove(MainActivity.deviceFragment).commit();
+                        android.support.v4.app.FragmentManager fm = getFragmentManager();
+                        fm.beginTransaction()
+                                .remove(MainActivity.deviceFragment)
+                                .commitAllowingStateLoss();
                         MainActivity.tb.switchContent(MainActivity.userFragment);
+                        MainActivity.deviceFragment=null;
 
                     }
                 });
         mMaterialDialog.show();
+
     }
 
     //处理水箱信息

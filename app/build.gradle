@@ -46,7 +46,7 @@ dependencies {
     provided 'org.glassfish:javax.annotation:10.0-b28' //解决获取不到@Subscribe注解的问题
     compile 'com.jakewharton:butterknife:8.0.1'
     compile 'com.diogobernardino:williamchart:2.5.0'
-    compile 'com.github.nanchen2251:AppManager:1.0.1'
+    compile 'com.tuzhenlei:crashhandler:1.0.1'
     apt 'com.jakewharton:butterknife-compiler:8.0.0'
 }
 

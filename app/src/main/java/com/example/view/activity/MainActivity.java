@@ -14,7 +14,7 @@ import com.example.view.fragment.SettingFragment;
 import com.example.view.fragment.UserFragment;
 import com.example.utils.tab.BarEntity;
 import com.example.utils.tab.BottomTabBar;
-import com.nanchen.crashmanager.UncaughtExceptionHandlerImpl;
+import com.tuzhenlei.crashhandler.CrashHandler;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,7 +32,8 @@ public class MainActivity extends FragmentActivity implements BottomTabBar.OnSel
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        UncaughtExceptionHandlerImpl.getInstance().init(this, BuildConfig.DEBUG, true, 0, MainActivity.class);
+        CrashHandler.getInstance().init(getApplication(), android.support.v7.appcompat.BuildConfig.DEBUG, true, 0, SplashActivity.class);
+        CrashHandler.setCrashTip("很抱歉，应用即将重启，请耐心等待");
         initView();
 
     }
