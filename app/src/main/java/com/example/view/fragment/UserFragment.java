@@ -15,6 +15,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.example.model.impl.LoginModelImpl;
@@ -47,6 +48,8 @@ public class UserFragment extends Fragment  implements DeviceInfoPresenter.IDevi
     private ProgressDialog progressDialog;
     private String flag = null;
     private UserFragment context;
+    private View preView = null;
+    private String preTag =null;
 
     @Nullable
     @Override
@@ -77,15 +80,42 @@ public class UserFragment extends Fragment  implements DeviceInfoPresenter.IDevi
           adapter.setOnItemClickListener(new UserAdapter.onRecyclerViewItemClickListener() {
               @Override
               public void onItemClick(View v, String tag) {
+
+                        if(preView == null || preTag == null){
+                            ImageView imageView = (ImageView) v.findViewById(R.id.item_select);
+                            imageView.setVisibility(View.VISIBLE);
+                            preView = v;
+                            preTag = tag;
+                        }else{
+                            if(!preTag.equals(tag)){
+                                ImageView imageView = (ImageView) v.findViewById(R.id.item_select);
+                                imageView.setVisibility(View.VISIBLE);
+                                ImageView imageView1 = (ImageView) preView.findViewById(R.id.item_select);
+                                imageView1.setVisibility(View.INVISIBLE);
+                                preView = v;
+                                preTag = tag;
+                            }
+                            ImageView imageView = (ImageView) v.findViewById(R.id.item_select);
+                            imageView.setVisibility(View.VISIBLE);
+                        }
+
                         if(MainActivity.deviceFragment!=null){
                             FragmentManager fragmentManager = getFragmentManager();
                             fragmentManager.beginTransaction()
                                     .remove(MainActivity.deviceFragment)
                                     .commitAllowingStateLoss();
                         }
+                        if(MainActivity.infoFragment!=null){
+                            FragmentManager fragmentManager = getFragmentManager();
+                            fragmentManager.beginTransaction()
+                                    .remove(MainActivity.infoFragment)
+                                    .commitAllowingStateLoss();
+                        }
                         progressDialog.show();
                         deviceInfoPresenter.getDeviceInfo(Integer.parseInt(tag));
+                        Log.e("success","success++++++");
                         flag = tag;
+
                    }
 
           });
@@ -117,7 +147,6 @@ public class UserFragment extends Fragment  implements DeviceInfoPresenter.IDevi
                         mMaterialDialog.dismiss();
                         FragmentManager fm = getFragmentManager();
                         fm.beginTransaction().remove(MainActivity.deviceFragment).commit();
-
                         System.exit(0);
                     }
                 });
@@ -159,6 +188,7 @@ public class UserFragment extends Fragment  implements DeviceInfoPresenter.IDevi
     @Override
     public void onSuccess(List<String> deviceInfo, List<String> detailInfo) {
           progressDialog.dismiss();
+          Log.e("success","success");
           MainActivity.deviceFragment = new DeviceFragment();
           Bundle bundle = new Bundle();
           bundle.putStringArrayList("deviceInfo", (ArrayList<String>) deviceInfo);
@@ -166,6 +196,7 @@ public class UserFragment extends Fragment  implements DeviceInfoPresenter.IDevi
           bundle.putString("sel",flag);
           MainActivity.deviceFragment.setArguments(bundle);
           MainActivity.tb.switchContent(MainActivity.deviceFragment);
+
     }
 
     @Override

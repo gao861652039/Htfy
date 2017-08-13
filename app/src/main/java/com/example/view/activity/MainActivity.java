@@ -32,8 +32,8 @@ public class MainActivity extends FragmentActivity implements BottomTabBar.OnSel
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        CrashHandler.getInstance().init(getApplication(), android.support.v7.appcompat.BuildConfig.DEBUG, true, 0, SplashActivity.class);
-        CrashHandler.setCrashTip("很抱歉，应用即将重启，请耐心等待");
+//        CrashHandler.getInstance().init(getApplication(), android.support.v7.appcompat.BuildConfig.DEBUG, true, 0, SplashActivity.class);
+//        CrashHandler.setCrashTip("很抱歉，应用即将重启，请耐心等待");
         initView();
 
     }
@@ -81,6 +81,16 @@ public class MainActivity extends FragmentActivity implements BottomTabBar.OnSel
                 break;
         }
     }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        ActivityManager.removeAllActivity();
+        this.finish();
+
+    }
+
+
     //--------------使用onKeyUp()干掉他--------------
 
     //记录用户首次点击返回键的时间

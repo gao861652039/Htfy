@@ -7,6 +7,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.view.activity.R;
@@ -67,6 +68,7 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
         TextView useraddress;
         TextView location;
         TextView data_time;
+        ImageView item_select;
 
 
         public ViewHolder(View itemView) {
@@ -77,7 +79,8 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
             useraddress = (TextView) itemView.findViewById(R.id.user_address);
             location = (TextView) itemView.findViewById(R.id.location);
             data_time = (TextView) itemView.findViewById(R.id.data_time);
-
+            item_select = (ImageView) itemView.findViewById(R.id.item_select);
+            item_select.setVisibility(View.INVISIBLE);
         }
 
 

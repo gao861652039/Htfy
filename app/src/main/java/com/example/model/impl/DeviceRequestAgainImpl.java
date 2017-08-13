@@ -2,15 +2,13 @@ package com.example.model.impl;
 
 import android.util.Log;
 
-import com.example.model.inter.DeviceModel;
 import com.example.model.inter.DeviceRequsetAgainModel;
-import com.example.model.inter.LoginModel;
 import com.example.model.thread.SocketThread;
 import com.example.presenter.inter.OnDeviceInfoListener;
 import com.example.utils.Flag;
 import com.example.utils.NumberUtils;
 import com.example.utils.TimeUtils;
-import com.example.utils.tab.GetGdtmInfoUtils;
+import com.example.utils.GetGdtmInfoUtils;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;

@@ -19,6 +19,13 @@
         android:layout_gravity="center"
         android:orientation="vertical">
 
+        <ImageView
+            android:id="@+id/item_select"
+            android:layout_width="50dp"
+            android:layout_height="40dp"
+            android:layout_gravity="left"
+            android:src="@drawable/bookmark11"
+            />
 
         <TextView
             android:id="@+id/machineNumber"

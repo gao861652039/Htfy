@@ -72,9 +72,13 @@ public class LoginActivity extends AppCompatActivity implements LoginPresenter.I
         progressDialog.show();
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        progressDialog.dismiss();
+    }
 
-
-//账户登录结果
+    //账户登录结果
     @Override
     public void onSuccess(String[] gdtmId,String[] userInfo) {
         Log.e("tag","登陆成功");
@@ -86,6 +90,7 @@ public class LoginActivity extends AppCompatActivity implements LoginPresenter.I
 
 
     }
+
 
     @Override
     public void onFailure(String s) {

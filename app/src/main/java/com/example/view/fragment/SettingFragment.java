@@ -33,7 +33,7 @@ public class SettingFragment extends Fragment {
          button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                getActivity().finish();
                 System.exit(0);
             }
         });

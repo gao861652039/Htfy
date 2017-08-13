@@ -225,6 +225,8 @@ public class InfoFragment extends Fragment {
                         fm.beginTransaction().remove(MainActivity.infoFragment).commit();
                         MainActivity.tb.select(0,MainActivity.bars);
                         tb.switchContent(MainActivity.userFragment);
+                        MainActivity.infoFragment = null;
+
                     }
                 })
                 .setNegativeButton("取消", new View.OnClickListener() {
@@ -235,7 +237,7 @@ public class InfoFragment extends Fragment {
                         fm.beginTransaction().remove(MainActivity.infoFragment).commit();
                         MainActivity.tb.select(0,MainActivity.bars);
                         tb.switchContent(MainActivity.userFragment);
-
+                        MainActivity.infoFragment = null;
                     }
                 });
         mMaterialDialog.show();
