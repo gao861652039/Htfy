@@ -113,7 +113,6 @@ public class UserFragment extends Fragment  implements DeviceInfoPresenter.IDevi
                         }
                         progressDialog.show();
                         deviceInfoPresenter.getDeviceInfo(Integer.parseInt(tag));
-                        Log.e("success","success++++++");
                         flag = tag;
 
                    }
