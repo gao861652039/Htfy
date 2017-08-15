@@ -12,7 +12,7 @@ import android.widget.Toast;
 import com.example.presenter.inter.LoginPresenter;
 import com.example.presenter.impl.LoginPresenterImpl;
 import com.example.utils.ActivityManager;
-
+import com.example.utils.ClickFilter;
 
 
 public class LoginActivity extends AppCompatActivity implements LoginPresenter.IloginView{
@@ -47,7 +47,8 @@ public class LoginActivity extends AppCompatActivity implements LoginPresenter.I
     }
 
     public void login(View view) {
-
+        if(ClickFilter.filter())
+            return;
         String username = accountEt.getText().toString();
         String password = pwdEt.getText().toString();
         editor = getSharedPreferences("data", MODE_PRIVATE).edit();

@@ -16,6 +16,7 @@ import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.example.utils.ClickFilter;
 import com.example.utils.Flag;
 import com.example.view.activity.R;
 import com.example.view.fragment.DeviceFragment;
@@ -139,6 +140,8 @@ public class PopupWindows extends PopupWindow {
                     .setOnClickListener(new View.OnClickListener() {
 
                         public void onClick(View v) {
+                            if(ClickFilter.filter())
+                                return;
                             Calendar calendar = Calendar.getInstance();
                             if(parent.getId() == R.id.bt){
                                 if(date == null){
@@ -151,6 +154,7 @@ public class PopupWindows extends PopupWindow {
                                     date = new SimpleDateFormat("yyyy-MM-dd").format(calendar.getTime());
                                 }
                                     DeviceFragment.end_date = date;
+                                    Log.e("pop","++++");
                                     EventBus.getDefault().postSticky(Flag.GETDATESUCCESS);
                                 }
 

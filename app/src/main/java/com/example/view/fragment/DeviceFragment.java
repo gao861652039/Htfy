@@ -18,6 +18,7 @@ import android.widget.Toast;
 import com.example.model.entity.ChartEntity;
 import com.example.presenter.impl.DeviceRequestPresenterImpl;
 import com.example.presenter.inter.DeviceInfoPresenter;
+import com.example.utils.ClickFilter;
 import com.example.utils.Flag;
 import com.example.utils.HandleInfoUtils;
 import com.example.utils.tab.PopupWindows;
@@ -34,6 +35,7 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
+import java.sql.Time;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -128,6 +130,8 @@ public class DeviceFragment extends Fragment implements DeviceInfoPresenter.IDev
         bt.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if(ClickFilter.filter())
+                    return;
                 pw_start = new PopupWindows(getContext(), v);
 
             }
@@ -135,6 +139,8 @@ public class DeviceFragment extends Fragment implements DeviceInfoPresenter.IDev
         bt2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if(ClickFilter.filter())
+                    return;
                 pw_end = new PopupWindows(getContext(), v);
                 if(MainActivity.infoFragment != null) {
                     android.support.v4.app.FragmentManager fm = getFragmentManager();
@@ -221,7 +227,7 @@ public class DeviceFragment extends Fragment implements DeviceInfoPresenter.IDev
             //重新进行网络请求
             progressDialog.show();
             Log.e("tagfffff","++++++++++");
-            deviceRequestPresenter.getDeviceInfo(Integer.parseInt(sel), start_date, end_date);
+            deviceRequestPresenter.getDeviceInfo(Integer.parseInt(sel), start, end);
 
     }
 

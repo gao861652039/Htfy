@@ -32,19 +32,20 @@ public class DeviceAdapter extends BaseRecyclerViewAdapter<DeviceInfo,DeviceInfo
     private LayoutInflater mInflater;
     public DeviceAdapter(Context ctx, List<RecyclerViewData> datas) {
         super(ctx, datas);
-        mInflater = LayoutInflater.from(ctx);
         this.ctx = ctx;
         this.datas = datas;
     }
 
     @Override
     public View getGroupView(ViewGroup parent) {
-        return mInflater.inflate(R.layout.deviceinfo,parent,false);
+        View view = mInflater.from(ctx).inflate(R.layout.deviceinfo,parent,false);
+        return view;
     }
 
     @Override
     public View getChildView(ViewGroup parent) {
-        return mInflater.inflate(R.layout.deviceinfo_item,parent,false);
+        View view = mInflater.from(ctx).inflate(R.layout.deviceinfo_item,parent,false);
+        return view;
     }
 
     @Override
