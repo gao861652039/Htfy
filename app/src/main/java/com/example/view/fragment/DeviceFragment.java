@@ -199,7 +199,7 @@ public class DeviceFragment extends Fragment implements DeviceInfoPresenter.IDev
 
         if (event.equals(Flag.GETDATESUCCESS)) {
 
-            Log.e("tagfffff","++++++++++");
+
             bt.setText("起始日期\n" + beginFormat(transform2(start_date)));
             bt2.setText("结束日期\n" + endFormat(transform2(end_date)));
             handleTimeRequest(start_date, end_date);
@@ -222,9 +222,9 @@ public class DeviceFragment extends Fragment implements DeviceInfoPresenter.IDev
 
     //筛选数据
     public void handleTimeRequest(String start, String end) {
-
             //重新进行网络请求
             progressDialog.show();
+            Log.e("tagfffff","++++++++++");
             deviceRequestPresenter.getDeviceInfo(Integer.parseInt(sel), start_date, end_date);
 
     }
