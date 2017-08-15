@@ -81,7 +81,7 @@ public class LoginActivity extends AppCompatActivity implements LoginPresenter.I
     //账户登录结果
     @Override
     public void onSuccess(String[] gdtmId,String[] userInfo) {
-        Log.e("tag","登陆成功");
+
         progressDialog.dismiss();
         intent = new Intent(LoginActivity.this,MainActivity.class);
         intent.putExtra("gdtm_id",gdtmId);

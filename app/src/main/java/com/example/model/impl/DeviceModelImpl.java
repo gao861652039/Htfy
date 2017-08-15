@@ -40,7 +40,6 @@ public class DeviceModelImpl implements DeviceModel {
         st.gdtm_start_date = TimeUtils.start_date();     //7天的数据
         st.gdtm_end_date = TimeUtils.end_date();       //7天的数据
         LoginModelImpl.flag = Flag.GETDATA;
-
         st.start();
 
     }
@@ -51,7 +50,6 @@ public class DeviceModelImpl implements DeviceModel {
         try {
 
             if(event.equals(Flag.GETDATA)) {
-                Log.e("tag","----------");
                 deviceInfo = GetGdtmInfoUtils.getDeviceInfo(st.gdtm_data);
                 detailInfo = GetGdtmInfoUtils.getDetailInfo(st.gdtm_data);
                 listener.onSuccess(deviceInfo, detailInfo);

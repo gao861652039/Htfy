@@ -1,6 +1,6 @@
 package com.example.model.impl;
 
-import android.util.Log;
+
 
 
 import com.example.model.inter.LoginModel;
@@ -28,7 +28,6 @@ public class LoginModelImpl implements LoginModel {
              st.join();
              if(st.gdtm_id.length!=0){
                  onLoginListener.onSuccess(st.gdtm_id,st.gdtm_info);
-                 Log.e("userInfo",st.gdtm_info[0]);
              }else{
                  onLoginListener.onFailure("获取用户下挂的gdtm失败");
 

@@ -49,7 +49,6 @@ public class DeviceRequestAgainImpl implements DeviceRequsetAgainModel {
     public void test(String event) {
         try {
             if(event.equals(Flag.GETDATAAGAIN)) {
-                Log.e("???",event);
                 deviceInfo = GetGdtmInfoUtils.getDeviceInfo(st.gdtm_data);
                 detailInfo = GetGdtmInfoUtils.getDetailInfo(st.gdtm_data);
                 listener.onSuccess(deviceInfo, detailInfo);

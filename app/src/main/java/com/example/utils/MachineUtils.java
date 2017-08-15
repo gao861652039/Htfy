@@ -82,7 +82,6 @@ public class MachineUtils {
     //得到水箱故障
     public static String getSxError(String error){
         String str = Integer.toHexString(Integer.parseInt(error));
-        Log.e("error",str);
         if(str!=null) {
             switch (str) {
                 case "ZZ":

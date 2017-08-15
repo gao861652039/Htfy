@@ -81,7 +81,7 @@ public class DeviceFragment extends Fragment implements DeviceInfoPresenter.IDev
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
-        Log.e("onCreateView","onCreateView");
+
         View view = inflater.inflate(R.layout.fragment_dev, container, false);
         return view;
     }
@@ -96,7 +96,7 @@ public class DeviceFragment extends Fragment implements DeviceInfoPresenter.IDev
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        Log.e("onActivityCreated","onActivityCreated");
+
 
         EventBus.getDefault().register(this);
         progressDialog = new ProgressDialog(getContext());
@@ -198,13 +198,9 @@ public class DeviceFragment extends Fragment implements DeviceInfoPresenter.IDev
     public void getDateEvent(String event) {
 
         if (event.equals(Flag.GETDATESUCCESS)) {
-
-
             bt.setText("起始日期\n" + beginFormat(transform2(start_date)));
             bt2.setText("结束日期\n" + endFormat(transform2(end_date)));
             handleTimeRequest(start_date, end_date);
-
-
         }else if(event.equals(Flag.SUCCESS)){
             HandleInfoUtils.chartEntities.clear();
             datas.clear();

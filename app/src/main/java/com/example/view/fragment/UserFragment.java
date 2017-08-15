@@ -71,7 +71,7 @@ public class UserFragment extends Fragment  implements DeviceInfoPresenter.IDevi
 
 
           List<UserInfo> list = getUserInfos();
-          Log.e("tag44444",list.get(0).getLocation());
+
           recyclerView = (RecyclerView) getActivity().findViewById(R.id.cardLayout);
           GridLayoutManager layoutManager = new GridLayoutManager(getActivity(), 1);
           recyclerView.setLayoutManager(layoutManager);
@@ -191,7 +191,7 @@ public class UserFragment extends Fragment  implements DeviceInfoPresenter.IDevi
     @Override
     public void onSuccess(List<String> deviceInfo, List<String> detailInfo) {
           progressDialog.dismiss();
-          Log.e("success","success");
+
           MainActivity.deviceFragment = new DeviceFragment();
           Bundle bundle = new Bundle();
           bundle.putStringArrayList("deviceInfo", (ArrayList<String>) deviceInfo);
