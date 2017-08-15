@@ -1,5 +1,8 @@
 package drawthink.expandablerecyclerview.bean;
 
+import android.bluetooth.BluetoothClass;
+import android.support.annotation.NonNull;
+
 import java.util.List;
 
 /**
@@ -10,7 +13,7 @@ import java.util.List;
  * S 为child数据对象
  */
 
-public class RecyclerViewData<T,S>{
+public class RecyclerViewData<T,S> implements Comparable<RecyclerViewData<T, S>> {
 
     private GroupItem groupItem;
 
@@ -50,4 +53,17 @@ public class RecyclerViewData<T,S>{
         return (S)groupItem.getChildDatas().get(childPosition);
     }
 
+    @Override
+    public int compareTo(@NonNull RecyclerViewData<T, S> o) {
+            GroupItem groupItem1 = o.getGroupItem();
+            DeviceInfo deviceInfo1 = (DeviceInfo) groupItem1.getGroupData();
+            DeviceInfo deviceInfo2 = (DeviceInfo) groupItem.getGroupData();
+            if(deviceInfo1.getTime().compareTo(deviceInfo2.getTime())>0){
+                return  1;
+            }else if(deviceInfo1.getTime().compareTo(deviceInfo2.getTime())==0){
+                return 0;
+            }else{
+                return -1;
+            }
+    }
 }
