@@ -191,6 +191,13 @@ public class UserFragment extends Fragment  implements DeviceInfoPresenter.IDevi
     @Override
     public void onSuccess(List<String> deviceInfo, List<String> detailInfo) {
           progressDialog.dismiss();
+         if(deviceInfo == null){
+             deviceInfo = new ArrayList<>();
+         }
+
+         if(detailInfo == null){
+             detailInfo = new ArrayList<>();
+         }
 
           MainActivity.deviceFragment = new DeviceFragment();
           Bundle bundle = new Bundle();

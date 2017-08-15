@@ -37,8 +37,8 @@ public class DeviceModelImpl implements DeviceModel {
         listener = onDeviceInfoListener;
         st.socket_mode = 0x2;
         st.gdtm_sel = NumberUtils.toHex(sel);
-        st.gdtm_start_date = TimeUtils.start_date();     //7天的数据
-        st.gdtm_end_date = TimeUtils.end_date();       //7天的数据
+        st.gdtm_start_date = TimeUtils.start_date();     //3天的数据
+        st.gdtm_end_date = TimeUtils.end_date();       //3天的数据
         LoginModelImpl.flag = Flag.GETDATA;
         st.start();
 

@@ -60,11 +60,11 @@ public class RecyclerViewData<T,S> implements Comparable<RecyclerViewData<T, S>>
             DeviceInfo deviceInfo1 = (DeviceInfo) groupItem1.getGroupData();
             DeviceInfo deviceInfo2 = (DeviceInfo) groupItem.getGroupData();
             if(deviceInfo1.getTime().compareTo(deviceInfo2.getTime())>0){
-                return  1;
+                return  -1;
             }else if(deviceInfo1.getTime().compareTo(deviceInfo2.getTime())==0){
                 return 0;
             }else{
-                return -1;
+                return 1;
             }
     }
 }

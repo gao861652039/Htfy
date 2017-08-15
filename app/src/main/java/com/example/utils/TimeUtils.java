@@ -14,7 +14,7 @@ public class TimeUtils {
     public static Date getBeforeWeek() {
 
         Calendar calendar = Calendar.getInstance();
-        calendar.add(Calendar.DAY_OF_WEEK, -7);    //得到前一zhou
+        calendar.add(Calendar.DAY_OF_WEEK, -3);    //得到前一zhou
         return calendar.getTime();
 
     }

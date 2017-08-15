@@ -126,6 +126,9 @@ public class DeviceFragment extends Fragment implements DeviceInfoPresenter.IDev
         sortByTime(datas);
         deviceAdapter = new DeviceAdapter(getContext(),datas);
         recyclerView.setAdapter(deviceAdapter);
+        if(datas.size()!=0) {
+            recyclerView.smoothScrollToPosition(datas.size() - 1);
+        }
         deviceAdapter.notifyRecyclerViewData();
         bt.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -215,6 +218,9 @@ public class DeviceFragment extends Fragment implements DeviceInfoPresenter.IDev
             sortByTime(datas);
             deviceAdapter = new DeviceAdapter(getContext(),datas);
             recyclerView.setAdapter(deviceAdapter);
+            if(datas.size()!=0) {
+                recyclerView.smoothScrollToPosition(datas.size() - 1);
+            }
             deviceAdapter.notifyRecyclerViewData();
             progressDialog.dismiss();
 

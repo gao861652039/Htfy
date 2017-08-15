@@ -83,11 +83,6 @@ public class DeviceAdapter extends BaseRecyclerViewAdapter<DeviceInfo,DeviceInfo
         holder.alarm_info.setText(groupData.getAlarminfo());
         holder.other_info.setText(builder);
 
-
-//
-//                holder.time.setText(groupData.getTime());
-//                holder.alarm_info.setText(groupData.getAlarminfo());
-//                holder.other_info.setText(groupData.getOtherInfo());
     }
 
     @Override
