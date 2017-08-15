@@ -87,6 +87,7 @@ public class MainActivity extends FragmentActivity implements BottomTabBar.OnSel
         super.onPause();
         ActivityManager.removeAllActivity();
         this.finish();
+        System.exit(0);
 
     }
 
