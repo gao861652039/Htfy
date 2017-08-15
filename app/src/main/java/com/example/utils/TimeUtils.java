@@ -87,6 +87,18 @@ public class TimeUtils {
         return  str+"24点";
 
     }
+    //转换结束日期格式
+    public static String  endFormat2(){
+         Calendar calendar = Calendar.getInstance();
+         Date date = calendar.getTime();
+         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy年MM月dd日HH点");
+         String str = simpleDateFormat.format(date);
+         return str;
+
+    }
+
+
+
     //显示内容日期格式
     public  static String disContent(String s){
 

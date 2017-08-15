@@ -57,6 +57,7 @@ import static com.example.utils.TimeUtils.beginFormat;
 import static com.example.utils.TimeUtils.disContent;
 import static com.example.utils.TimeUtils.endFormat;
 
+import static com.example.utils.TimeUtils.endFormat2;
 import static com.example.utils.TimeUtils.getBeforeWeek;
 import static com.example.utils.TimeUtils.getPresentMonth;
 import static com.example.utils.TimeUtils.transform2;
@@ -115,7 +116,7 @@ public class DeviceFragment extends Fragment implements DeviceInfoPresenter.IDev
         bt = (Button) getActivity().findViewById(R.id.bt);
         bt2 = (Button) getActivity().findViewById(R.id.bt2);
         bt.setText("起始日期\n" + beginFormat(getBeforeWeek()));
-        bt2.setText("结束日期\n" + endFormat(getPresentMonth()));
+        bt2.setText("结束日期\n" + endFormat2());
         deviceInfo = getDeviceInfo();
         detailInfo = getDetailInfo();
         if( null == deviceInfo && null == detailInfo ){
