@@ -1,4 +1,4 @@
-package drawthink.expandablerecyclerview.bean;
+package expandablerecyclerview.bean;
 
 /**
  * author：Drawthink

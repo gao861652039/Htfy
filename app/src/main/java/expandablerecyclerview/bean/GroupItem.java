@@ -1,4 +1,4 @@
-package drawthink.expandablerecyclerview.bean;
+package expandablerecyclerview.bean;
 
 import java.util.List;
 
@@ -10,7 +10,7 @@ import java.util.List;
  * S 为child数据对象
  */
 
-public class GroupItem<T,S> extends BaseItem{
+public class GroupItem<T,S> extends BaseItem {
 
     /**head data*/
     private T groupData;

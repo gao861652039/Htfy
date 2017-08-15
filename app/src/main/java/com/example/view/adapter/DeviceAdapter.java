@@ -54,7 +54,6 @@ public class DeviceAdapter extends RecyclerView.Adapter<DeviceAdapter.ViewHolder
 
             DeviceInfo deviceInfo = mDeviceInfo.get(position);
             SpannableStringBuilder builder = new SpannableStringBuilder(deviceInfo.getOtherInfo());
-           // ForegroundColorSpan redSpan =  new ForegroundColorSpan(Color.RED);
             String str = deviceInfo.getOtherInfo().toString();
             ArrayList<Integer>  bsw = new ArrayList<>();
             ArrayList<Integer>  jjw = new ArrayList<>();

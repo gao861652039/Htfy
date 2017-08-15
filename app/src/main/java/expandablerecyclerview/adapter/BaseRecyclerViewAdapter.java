@@ -1,19 +1,21 @@
-package drawthink.expandablerecyclerview.adapter;
+package expandablerecyclerview.adapter;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
+
 import java.util.ArrayList;
 import java.util.List;
-import drawthink.expandablerecyclerview.bean.BaseItem;
-import drawthink.expandablerecyclerview.bean.GroupItem;
-import drawthink.expandablerecyclerview.bean.RecyclerViewData;
-import drawthink.expandablerecyclerview.holder.BaseViewHolder;
-import drawthink.expandablerecyclerview.listener.OnRecyclerViewListener;
-import static drawthink.expandablerecyclerview.holder.BaseViewHolder.VIEW_TYPE_CHILD;
-import static drawthink.expandablerecyclerview.holder.BaseViewHolder.VIEW_TYPE_PARENT;
+
+import expandablerecyclerview.bean.BaseItem;
+import expandablerecyclerview.bean.GroupItem;
+import expandablerecyclerview.bean.RecyclerViewData;
+import expandablerecyclerview.holder.BaseViewHolder;
+import expandablerecyclerview.listener.OnRecyclerViewListener;
+import static expandablerecyclerview.holder.BaseViewHolder.VIEW_TYPE_CHILD;
+import static expandablerecyclerview.holder.BaseViewHolder.VIEW_TYPE_PARENT;
 
 
 /**

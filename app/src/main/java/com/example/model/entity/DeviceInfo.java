@@ -6,7 +6,7 @@ import android.support.annotation.NonNull;
  * Created by 高峰 on 2017/2/12.
  */
 
-public class DeviceInfo implements Comparable<DeviceInfo>{
+public class DeviceInfo {
 
     private String time;
     private String alarminfo;
@@ -19,6 +19,7 @@ public class DeviceInfo implements Comparable<DeviceInfo>{
         this.otherInfo = otherInfo;
         this.flag = flag;
     }
+
 
 
 
@@ -54,14 +55,4 @@ public class DeviceInfo implements Comparable<DeviceInfo>{
         this.flag = flag;
     }
 
-    @Override
-    public int compareTo(@NonNull DeviceInfo o) {
-        if(this.getTime().compareTo(o.getTime())<0){
-            return 1;
-        }else if(this.getTime().compareTo(o.getTime())==0){
-            return 0;
-        }else{
-            return -1;
-        }
-    }
 }

@@ -1,7 +1,8 @@
-package drawthink.expandablerecyclerview.bean;
+package expandablerecyclerview.bean;
 
-import android.bluetooth.BluetoothClass;
 import android.support.annotation.NonNull;
+
+import com.example.model.entity.DeviceInfo;
 
 import java.util.List;
 

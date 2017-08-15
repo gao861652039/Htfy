@@ -5,6 +5,7 @@ import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.app.ProgressDialog;
 import android.media.audiofx.LoudnessEnhancer;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -24,26 +25,31 @@ import com.example.model.entity.ChartEntity;
 import com.example.presenter.impl.DeviceRequestPresenterImpl;
 import com.example.presenter.inter.DeviceInfoPresenter;
 import com.example.utils.Flag;
+import com.example.utils.HandleInfoUtils;
 import com.example.utils.tab.PopupWindows;
 import com.example.view.activity.MainActivity;
 import com.example.view.activity.R;
-import com.example.view.adapter.DeviceAdapter;
+
 import com.example.model.entity.DataInfo;
 import com.example.model.entity.DeviceInfo;
-import com.example.utils.MachineUtils;
+
 import com.example.utils.TimeUtils;
+import com.example.view.adapter.MyAdapter;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
-import java.sql.Time;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+
+import expandablerecyclerview.bean.RecyclerViewData;
 import me.drakeet.materialdialog.MaterialDialog;
 
+import static com.example.utils.HandleInfoUtils.handlePH;
+import static com.example.utils.HandleInfoUtils.transToFloat;
 import static com.example.utils.MachineUtils.getAlarmCode;
 import static com.example.utils.MachineUtils.sxId;
 import static com.example.utils.MachineUtils.sxMsgType;
@@ -62,10 +68,7 @@ import static com.example.utils.TimeUtils.transform2;
 public class DeviceFragment extends Fragment implements DeviceInfoPresenter.IDeviceView {
     private DeviceRequestPresenterImpl deviceRequestPresenter;
     private ArrayList<ChartEntity> info = new ArrayList<>();
-    private ArrayList<ChartEntity> chartEntities = new ArrayList<>();
     private List<DeviceInfo> deviceInfos = new ArrayList<>();
-    private List<DeviceInfo> infosAfterSelected = new ArrayList<>();
-    private DeviceAdapter deviceAdapter;
     private RecyclerView recyclerView;
     private PopupWindows pw_start;
     private PopupWindows pw_end;
@@ -78,6 +81,10 @@ public class DeviceFragment extends Fragment implements DeviceInfoPresenter.IDev
     private List<String> deviceInfo;
     private List<String> detailInfo;
     private boolean flag = true;
+    private List<RecyclerViewData> datas = new ArrayList<>();
+    private List<DeviceInfo> subItem;
+    private MyAdapter myAdapter;
+    private RecyclerViewData<DeviceInfo,DeviceInfo> recyclerViewData;
 
     @Nullable
     @Override
@@ -114,17 +121,24 @@ public class DeviceFragment extends Fragment implements DeviceInfoPresenter.IDev
         if( null == deviceInfo && null == detailInfo ){
             dialog();
         }
+        handlerDetail(detailInfo);
+        for(DeviceInfo deviceInfo:subItem){
+
+            Log.e("sub",deviceInfo.getOtherInfo());
+        }
+
+        handlerDevice(deviceInfo);
+
+
         MainActivity.tb.select(1,MainActivity.bars);
-        handleDeviceInfo( getDeviceInfo());
-        handDetailInfo(getDetailInfo());
         sel = getSel();
         recyclerView = (RecyclerView) getActivity().findViewById(R.id.cardLayout2);
         GridLayoutManager layoutManager = new GridLayoutManager(getActivity(), 1);
         recyclerView.setLayoutManager(layoutManager);
-        sortByTime(deviceInfos);
-        deviceAdapter = new DeviceAdapter(deviceInfos);
-        recyclerView.setAdapter(deviceAdapter);
-       // MainActivity.infoFragment = new InfoFragment();
+        sortByTime(datas);
+        myAdapter = new MyAdapter(getContext(),datas);
+        recyclerView.setAdapter(myAdapter);
+        myAdapter.notifyRecyclerViewData();
         bt.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -152,127 +166,83 @@ public class DeviceFragment extends Fragment implements DeviceInfoPresenter.IDev
 
     }
 
+
+    //处理detail
+    public void handlerDetail(List<String> detail){
+        if(detail!=null){
+            for(int i=0;i<detail.size();i++){
+                if(detail.get(i).contains("C0")) {
+                    DeviceInfo groupData = HandleInfoUtils.handleSingleSxInfo(detail.get(i));
+                    subItem = new ArrayList<>();
+                    for (int j = i + 1; j < detail.size(); j++) {
+                        if (detail.get(j).contains("C2")) {
+                            String s = detail.get(j);
+                            subItem.add(HandleInfoUtils.handleSingleDetail(s));
+                        } else {
+                            recyclerViewData = new RecyclerViewData<DeviceInfo, DeviceInfo>(groupData,subItem);
+                            datas.add(recyclerViewData);
+                            break;
+                        }
+                    }
+
+                }
+            }
+        }
+    }
+
+
+
+    //处理device
+    public void handlerDevice(List<String> device){
+         if(device!=null){
+             for(int i=0;i<device.size();i++){
+                 DeviceInfo groupData = HandleInfoUtils.handlerSingleAlarmInfo(device.get(i));
+                 recyclerViewData = new RecyclerViewData<DeviceInfo, DeviceInfo>(groupData,new ArrayList<DeviceInfo>(){});
+                 datas.add(recyclerViewData);
+             }
+         }
+    }
+
+
     @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
     public void getDateEvent(String event) {
         if (event.equals(Flag.GETDATESUCCESS)) {
             Log.e("timeUtils",TimeUtils.toStart(start_date));
             bt.setText("起始日期\n" + beginFormat(transform2(start_date)));
             bt2.setText("结束日期\n" + endFormat(transform2(end_date)));
+            handleTimeRequest(TimeUtils.toStart(start_date), TimeUtils.toEnd(end_date));
 
-            int flag = handleTimeRequest(TimeUtils.toStart(start_date), TimeUtils.toEnd(end_date));
-//            if (flag == 1) {
-//                sortByTime(infosAfterSelected);
-//                Log.e("length",""+infosAfterSelected.size());
-//                deviceAdapter = new DeviceAdapter(infosAfterSelected);
-//                recyclerView.setAdapter(deviceAdapter);
-//                deviceAdapter.notifyDataSetChanged();
-//            }
 
         }else if(event.equals(Flag.SUCCESS)){
-            chartEntities.clear();
-            deviceInfos.clear();
-            handleDeviceInfo(deviceInfo);
-            handDetailInfo(detailInfo);
-            sortByTime(deviceInfos);
-            deviceAdapter = new DeviceAdapter(deviceInfos);
-            recyclerView.setAdapter(deviceAdapter);
-            deviceAdapter.notifyDataSetChanged();
+            HandleInfoUtils.chartEntities.clear();
+            datas.clear();
+            handlerDevice(deviceInfo);
+            handlerDetail(detailInfo);
+            sortByTime(datas);
+            myAdapter = new MyAdapter(getContext(),datas);
+            recyclerView.setAdapter(myAdapter);
+            myAdapter.notifyRecyclerViewData();
             progressDialog.dismiss();
-
-
 
         }
     }
 
 
     //筛选数据
-    public int handleTimeRequest(String start, String end) {
-        System.out.println(start);
-        System.out.println(end);
+    public void handleTimeRequest(String start, String end) {
 
-//        if (start.compareTo(TimeUtils.start_date())>=0 && start.compareTo(TimeUtils.end_date())<=0 && end.compareTo(TimeUtils.end_date())<=0) {
-//            //对原数据按照时间进行筛选
-//            infosAfterSelected.clear();
-//            for (int i = 0; i < deviceInfos.size(); i++) {
-//                String time = deviceInfos.get(i).getTime();
-//                if (time.compareTo(TimeUtils.disContent(start)) >= 0 && time.compareTo(TimeUtils.disContent(end))<=0) {
-//                    infosAfterSelected.add(deviceInfos.get(i));
-//                }
-//            }
-//
-//
-//            return 1;
-//        } else {
             //重新进行网络请求
             progressDialog.show();
             deviceRequestPresenter.getDeviceInfo(Integer.parseInt(sel), start_date, end_date);
-            return 0;
-     //   }
-
 
     }
 
     //对数据按日期顺序进行排序
 
-    public void sortByTime(List<DeviceInfo> list) {
+    public void sortByTime(List list) {
         Collections.sort(list);
     }
 
-
-    //处理C2以外指令
-    public void handleDeviceInfo(List<String> deviceInfo) {
-      if(deviceInfo!=null) {
-          for (String str : deviceInfo) {
-
-              String[] info = str.split("\\|");
-              String time = info[0].split("\\$")[1];
-              String alarmInfo = info[1];
-              String deviceId = info[2];
-              if ( str.contains("C1") || str.contains("C6")) {
-                  String sx = info[9];
-                  handleSxMessage(time, alarmInfo, sx);
-              }
-
-              if (str.contains("CT") || str.contains("CE")) {
-                  String param = info[3];
-                  handleAlarmInfo(time, alarmInfo, deviceId, param);
-              }
-          }
-      }
-    }
-
-    //处理C2指令
-    public void handDetailInfo(List<String> detailInfo) {
-
-        if(detailInfo!=null) {
-
-                for (String str : detailInfo) {
-                    if (str.contains("C2")) {
-
-                        String[] info = str.split("\\|");
-                        String time = info[0].split("\\$")[1];
-                        String alarmInfo = info[1];
-                        String deviceId = info[2];
-                        String ph = info[3];
-                        String orp = info[4];
-                        String yxl = info[5];
-                        String dl = info[6];
-                        String djc = info[7];
-                        String yb = info[8];
-                        handleUpLoadMsg(time, deviceId, alarmInfo, new DataInfo(ph, orp, yxl, dl, djc, yb));
-                    }else{
-                            String[] info = str.split("\\|");
-                            String time = info[0].split("\\$")[1];
-                            String alarmInfo = info[1];
-                            String sx = info[9];
-                            handleSxMessage(time, alarmInfo, sx);
-
-                        }
-                }
-
-
-            }
-    }
 
 
     //得到制水机组以外的数据
@@ -349,41 +319,41 @@ public class DeviceFragment extends Fragment implements DeviceInfoPresenter.IDev
     }
 
     //处理水箱信息
-    public void handleSxMessage(String time, String alarmInfo, String sx) {
-        //水箱顺序
-        //原水箱，纯水箱，酸水箱，碱水箱，盐水箱，搅拌箱
-        //Z：离线，3：高水位，2：中水位，1：补水位，0：警戒位
-        if ((!"".equals(sx)) && sx != null) {
-            String ysx = sx.substring(0, 1);
-            String csx = sx.substring(1, 2);
-            String ssx = sx.substring(2, 3);
-            String jsx = sx.substring(3, 4);
-            String yansx = sx.substring(4, 5);
-            String jbx = sx.substring(5, 6);
-
-            deviceInfos.add(new DeviceInfo(disContent(time), "系统信息:" + MachineUtils.getAlarmCode(alarmInfo),
-                    "原水箱:" + sxMsgType(ysx) +
-                            "纯水箱:" + sxMsgType(csx) +
-                            "酸水箱:" + sxMsgType(ssx) + "\n" +
-                            "碱水箱:" + sxMsgType(jsx) +
-                            "盐水箱:" + sxMsgType(yansx) +
-                            "搅拌箱:" + sxMsgType(jbx), false));
-        }
-    }
+//    public void handleSxMessage(String time, String alarmInfo, String sx) {
+//        //水箱顺序
+//        //原水箱，纯水箱，酸水箱，碱水箱，盐水箱，搅拌箱
+//        //Z：离线，3：高水位，2：中水位，1：补水位，0：警戒位
+//        if ((!"".equals(sx)) && sx != null) {
+//            String ysx = sx.substring(0, 1);
+//            String csx = sx.substring(1, 2);
+//            String ssx = sx.substring(2, 3);
+//            String jsx = sx.substring(3, 4);
+//            String yansx = sx.substring(4, 5);
+//            String jbx = sx.substring(5, 6);
+//
+//            deviceInfos.add(new DeviceInfo(disContent(time), "系统信息:" + MachineUtils.getAlarmCode(alarmInfo),
+//                    "原水箱:" + sxMsgType(ysx) +
+//                            "纯水箱:" + sxMsgType(csx) +
+//                            "酸水箱:" + sxMsgType(ssx) + "\n" +
+//                            "碱水箱:" + sxMsgType(jsx) +
+//                            "盐水箱:" + sxMsgType(yansx) +
+//                            "搅拌箱:" + sxMsgType(jbx), false));
+//        }
+//    }
 
     //处理报警和故障信息
-    public void handleAlarmInfo(String time, String alarmInfo, String deviceId, String param) {
-        if ((!"".equals(param)) && param != null) {
-            if ("CE".equals(alarmInfo)) {
-                deviceInfos.add(new DeviceInfo(disContent(time), getAlarmCode(alarmInfo),
-                        deviceId + "号机" + MachineUtils.getZsjError(param), true));
-            } else {
-                deviceInfos.add(new DeviceInfo(disContent(time), getAlarmCode(alarmInfo),
-                        sxId(deviceId) + MachineUtils.getSxError(param), true));
-            }
-        }
-
-    }
+//    public void handleAlarmInfo(String time, String alarmInfo, String deviceId, String param) {
+//        if ((!"".equals(param)) && param != null) {
+//            if ("CE".equals(alarmInfo)) {
+//                deviceInfos.add(new DeviceInfo(disContent(time), getAlarmCode(alarmInfo),
+//                        deviceId + "号机" + MachineUtils.getZsjError(param), true));
+//            } else {
+//                deviceInfos.add(new DeviceInfo(disContent(time), getAlarmCode(alarmInfo),
+//                        sxId(deviceId) + MachineUtils.getSxError(param), true));
+//            }
+//        }
+//
+//    }
 
     //处理上传数据信息
     public void handleUpLoadMsg(String time, String deviceId, String alarmInfo, DataInfo dataInfo) {
@@ -393,25 +363,11 @@ public class DeviceFragment extends Fragment implements DeviceInfoPresenter.IDev
                     "[PH:" + handlePH(dataInfo.getPh()) + "]" +
                             "[ORP:" + dataInfo.getOrp() + "mv]" +
                             "[有效氯:" + dataInfo.getYxl() + "mg/L]", false));
-            chartEntities.add(new ChartEntity(deviceId
-                    , disContent(time)
-                    , transToFloat(handlePH(dataInfo.getPh()))
-                    , transToFloat(dataInfo.getOrp())
-                    , transToFloat(dataInfo.getYxl())));
-            setter(chartEntities);
+
         }
     }
 
-    public String handlePH(String ph) {
-        float a = (Float.parseFloat(ph)) / 10;
-        return String.valueOf(a);
-    }
 
-    //将String转换为float
-    public float transToFloat(String s) {
-        float a = Float.parseFloat(s);
-        return a;
-    }
 
     public void setter(ArrayList<ChartEntity> list) {
 
