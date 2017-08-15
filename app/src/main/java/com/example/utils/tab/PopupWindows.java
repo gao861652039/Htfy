@@ -149,13 +149,10 @@ public class PopupWindows extends PopupWindow {
                             }else if(parent.getId() == R.id.bt2){
                                 if(date == null){
                                     date = new SimpleDateFormat("yyyy-MM-dd").format(calendar.getTime());
-                                    DeviceFragment.end_date = date;
-
-                                }else{
+                                }
                                     DeviceFragment.end_date = date;
                                     EventBus.getDefault().postSticky(Flag.GETDATESUCCESS);
                                 }
-                            }
 
                               dismiss();
                         }

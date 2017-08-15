@@ -182,7 +182,11 @@ public class UserFragment extends Fragment  implements DeviceInfoPresenter.IDevi
            return list;
     }
 
-
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        progressDialog.dismiss();
+    }
 
     @Override
     public void onSuccess(List<String> deviceInfo, List<String> detailInfo) {

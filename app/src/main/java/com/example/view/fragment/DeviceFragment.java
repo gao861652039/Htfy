@@ -1,15 +1,9 @@
 package com.example.view.fragment;
 
 
-import android.app.FragmentManager;
-import android.app.FragmentTransaction;
 import android.app.ProgressDialog;
-import android.media.audiofx.LoudnessEnhancer;
-import android.os.Build;
 import android.os.Bundle;
-import android.os.Handler;
 import android.os.Looper;
-import android.os.Message;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
@@ -34,7 +28,7 @@ import com.example.model.entity.DataInfo;
 import com.example.model.entity.DeviceInfo;
 
 import com.example.utils.TimeUtils;
-import com.example.view.adapter.MyAdapter;
+import com.example.view.adapter.DeviceAdapter;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -49,17 +43,13 @@ import expandablerecyclerview.bean.RecyclerViewData;
 import me.drakeet.materialdialog.MaterialDialog;
 
 import static com.example.utils.HandleInfoUtils.handlePH;
-import static com.example.utils.HandleInfoUtils.transToFloat;
 import static com.example.utils.MachineUtils.getAlarmCode;
-import static com.example.utils.MachineUtils.sxId;
-import static com.example.utils.MachineUtils.sxMsgType;
 import static com.example.utils.TimeUtils.beginFormat;
 import static com.example.utils.TimeUtils.disContent;
 import static com.example.utils.TimeUtils.endFormat;
 
 import static com.example.utils.TimeUtils.endFormat2;
 import static com.example.utils.TimeUtils.getBeforeWeek;
-import static com.example.utils.TimeUtils.getPresentMonth;
 import static com.example.utils.TimeUtils.transform2;
 
 
@@ -84,7 +74,7 @@ public class DeviceFragment extends Fragment implements DeviceInfoPresenter.IDev
     private boolean flag = true;
     private List<RecyclerViewData> datas = new ArrayList<>();
     private List<DeviceInfo> subItem;
-    private MyAdapter myAdapter;
+    private DeviceAdapter deviceAdapter;
     private RecyclerViewData<DeviceInfo,DeviceInfo> recyclerViewData;
 
     @Nullable
@@ -132,9 +122,9 @@ public class DeviceFragment extends Fragment implements DeviceInfoPresenter.IDev
         GridLayoutManager layoutManager = new GridLayoutManager(getActivity(), 1);
         recyclerView.setLayoutManager(layoutManager);
         sortByTime(datas);
-        myAdapter = new MyAdapter(getContext(),datas);
-        recyclerView.setAdapter(myAdapter);
-        myAdapter.notifyRecyclerViewData();
+        deviceAdapter = new DeviceAdapter(getContext(),datas);
+        recyclerView.setAdapter(deviceAdapter);
+        deviceAdapter.notifyRecyclerViewData();
         bt.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -153,7 +143,6 @@ public class DeviceFragment extends Fragment implements DeviceInfoPresenter.IDev
                             .commitAllowingStateLoss();
                     MainActivity.infoFragment = null;
                 }
-
             }
 
         });
@@ -199,14 +188,21 @@ public class DeviceFragment extends Fragment implements DeviceInfoPresenter.IDev
          }
     }
 
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        progressDialog.dismiss();
+    }
 
     @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
     public void getDateEvent(String event) {
+
         if (event.equals(Flag.GETDATESUCCESS)) {
-            Log.e("timeUtils",TimeUtils.toStart(start_date));
+
+            Log.e("tagfffff","++++++++++");
             bt.setText("起始日期\n" + beginFormat(transform2(start_date)));
             bt2.setText("结束日期\n" + endFormat(transform2(end_date)));
-            handleTimeRequest(TimeUtils.toStart(start_date), TimeUtils.toEnd(end_date));
+            handleTimeRequest(start_date, end_date);
 
 
         }else if(event.equals(Flag.SUCCESS)){
@@ -215,9 +211,9 @@ public class DeviceFragment extends Fragment implements DeviceInfoPresenter.IDev
             handlerDevice(deviceInfo);
             handlerDetail(detailInfo);
             sortByTime(datas);
-            myAdapter = new MyAdapter(getContext(),datas);
-            recyclerView.setAdapter(myAdapter);
-            myAdapter.notifyRecyclerViewData();
+            deviceAdapter = new DeviceAdapter(getContext(),datas);
+            recyclerView.setAdapter(deviceAdapter);
+            deviceAdapter.notifyRecyclerViewData();
             progressDialog.dismiss();
 
         }
