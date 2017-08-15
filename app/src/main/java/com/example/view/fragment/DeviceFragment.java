@@ -123,11 +123,6 @@ public class DeviceFragment extends Fragment implements DeviceInfoPresenter.IDev
             dialog();
         }
         handlerDetail(detailInfo);
-        for(DeviceInfo deviceInfo:subItem){
-
-            Log.e("sub",deviceInfo.getOtherInfo());
-        }
-
         handlerDevice(deviceInfo);
 
 
