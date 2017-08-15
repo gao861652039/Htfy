@@ -41,7 +41,12 @@ public class DeviceRequestAgainImpl implements DeviceRequsetAgainModel {
         st.gdtm_start_date =TimeUtils.toStart(start) ;
         st.gdtm_end_date =  TimeUtils.toEnd(end);
         LoginModelImpl.flag = Flag.GETDATAAGAIN;
-        st.start();
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                st.run();
+            }
+        }).start();
 
     }
 

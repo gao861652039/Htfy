@@ -40,7 +40,12 @@ public class DeviceModelImpl implements DeviceModel {
         st.gdtm_start_date = TimeUtils.start_date();     //3天的数据
         st.gdtm_end_date = TimeUtils.end_date();       //3天的数据
         LoginModelImpl.flag = Flag.GETDATA;
-        st.start();
+       new Thread(new Runnable() {
+           @Override
+           public void run() {
+               st.run();
+           }
+       }).start();
 
     }
 
