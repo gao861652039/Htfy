@@ -39,6 +39,8 @@ public class DeviceModelImpl implements DeviceModel {
         st.gdtm_sel = NumberUtils.toHex(sel);
         st.gdtm_start_date = TimeUtils.start_date();     //3天的数据
         st.gdtm_end_date = TimeUtils.end_date();       //3天的数据
+//        Log.e("start_date",st.gdtm_start_date);
+//        Log.e("end_date",st.gdtm_end_date);
         LoginModelImpl.flag = Flag.GETDATA;
        new Thread(new Runnable() {
            @Override
@@ -57,6 +59,7 @@ public class DeviceModelImpl implements DeviceModel {
             if(event.equals(Flag.GETDATA)) {
                 deviceInfo = GetGdtmInfoUtils.getDeviceInfo(st.gdtm_data);
                 detailInfo = GetGdtmInfoUtils.getDetailInfo(st.gdtm_data);
+//                GetGdtmInfoUtils.getAllData(st.gdtm_data);
                 listener.onSuccess(deviceInfo, detailInfo);
             }
         }catch (NullPointerException e){

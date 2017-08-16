@@ -18,20 +18,20 @@ public class GetGdtmInfoUtils {
     public static List<String> getDeviceInfo(SocketThread.gdtm_t gdtm_t){
         List<String> deviceInfo = new ArrayList<>();
         SocketThread.gdtm_t gdtm = gdtm_t;
-            if(gdtm_t.next == null){
-                return null;
+        if(gdtm_t.next == null){
+            return null;
+        }
+        do {
+            gdtm = gdtm.next;
+            if(gdtm == null){
+                break;
+            }else{
+               if(gdtm.data.contains("C0")){
+                   continue;
+               }
+               deviceInfo.add(gdtm.data);
             }
-            do {
-                gdtm = gdtm.next;
-                if(gdtm.next == null){
-                    break;
-                }else{
-                    if(gdtm.data.contains("C0")){
-                        continue;
-                    }
-                    deviceInfo.add(gdtm.data);
-                }
-            }while(true);
+        }while(true);
 
          return deviceInfo;
 
@@ -92,7 +92,7 @@ public class GetGdtmInfoUtils {
         }
         do {
             gdtm = gdtm.next;
-            if(gdtm.next == null){
+            if(gdtm == null){
                 break;
             }else{
 
