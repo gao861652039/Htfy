@@ -18,7 +18,7 @@ public class GetGdtmInfoUtils {
     public static List<String> getDeviceInfo(SocketThread.gdtm_t gdtm_t){
         List<String> deviceInfo = new ArrayList<>();
         SocketThread.gdtm_t gdtm = gdtm_t;
-        if(gdtm_t.next == null){
+        if(gdtm.next == null){
             return null;
         }
         do {
@@ -41,44 +41,53 @@ public class GetGdtmInfoUtils {
         List<String> detailInfo = new ArrayList<>();
         SocketThread.gdtm_t gdtm = gdtm_t;
         SocketThread.gdtm_t detail = null;
-
-        do{
-            if(gdtm.next == null){
-                return null;
+        if(gdtm.next == null){
+            return null;
+        }
+        do {
+            gdtm = gdtm.next;
+            if(gdtm == null){
+                break;
             }else{
-                 gdtm = gdtm.next;
                 if(gdtm.data.contains("C0")){
                     detailInfo.add(gdtm.data);
-                    Log.e("co1",gdtm.data);
-                    if(gdtm.detail == null){
-                        continue;
-                    }else{
+                    if(gdtm.detail!=null){
                         detail = gdtm.detail;
                         break;
+                    }else{
+                        continue;
                     }
-                }else{
-                    continue;
                 }
             }
         }while(true);
 
+
+
+
         do{
-               if(detail == null){
-                     break;
+                if(detail == null){
+                   break;
                 }
                 if(detail.data.contains("C2")){
+
                     detailInfo.add(detail.data);
                     detail = detail.next;
+
                 }
                else if(detail.data.contains("C0")){
-                   detailInfo.add(detail.data);
-                   detail = detail.detail;
-               }else{
-                    detail = detail.next;
-                }
-               if(detail.detail == null && detail.next ==null)
-                     break;
 
+                   detailInfo.add(detail.data);
+                   if(detail.detail!=null){
+                       detail = detail.detail;
+                   }else{
+                       detail = detail.next;
+                   }
+                }
+                else
+                 {
+                        detail = detail.next;
+
+                 }
         }while(true);
 
           return detailInfo;

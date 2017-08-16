@@ -28,18 +28,20 @@ public class DeviceRequestAgainImpl implements DeviceRequsetAgainModel {
 
     public DeviceRequestAgainImpl() {
 
-        EventBus.getDefault().register(this);
+
     }
 
     @Override
     public void loadDeviceInfo(int sel, String start, String end, OnDeviceInfoListener onDeviceInfoListener) {
 
-
+        EventBus.getDefault().register(this);
         listener = onDeviceInfoListener;
         st.socket_mode = 0x2;
         st.gdtm_sel = NumberUtils.toHex(sel);
         st.gdtm_start_date =TimeUtils.toStart(start) ;
         st.gdtm_end_date =  TimeUtils.toEnd(end);
+        Log.e("st.gdtm_start_date",st.gdtm_start_date);
+        Log.e(" st.gdtm_end_date", st.gdtm_end_date);
         LoginModelImpl.flag = Flag.GETDATAAGAIN;
         new Thread(new Runnable() {
             @Override
@@ -54,9 +56,11 @@ public class DeviceRequestAgainImpl implements DeviceRequsetAgainModel {
     public void test(String event) {
         try {
             if(event.equals(Flag.GETDATAAGAIN)) {
+                GetGdtmInfoUtils.getAllData(st.gdtm_data);
                 deviceInfo = GetGdtmInfoUtils.getDeviceInfo(st.gdtm_data);
                 detailInfo = GetGdtmInfoUtils.getDetailInfo(st.gdtm_data);
                 listener.onSuccess(deviceInfo, detailInfo);
+                EventBus.getDefault().unregister(this);
             }
         } catch (NullPointerException e) {
             listener.onFailure("获取数据失败");

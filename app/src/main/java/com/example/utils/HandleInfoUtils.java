@@ -77,9 +77,8 @@ public class HandleInfoUtils {
                             "碱水箱:" + sxMsgType(jsx) +
                             "盐水箱:" + sxMsgType(yansx) +
                             "搅拌箱:" + sxMsgType(jbx), false);
-        }else{
-            return null;
         }
+        return null;
     }
 
     public static String handlePH(String ph) {

@@ -116,8 +116,6 @@ public class DeviceFragment extends Fragment implements DeviceInfoPresenter.IDev
         }
         handlerDetail(detailInfo);
         handlerDevice(deviceInfo);
-
-
         MainActivity.tb.select(1,MainActivity.bars);
         sel = getSel();
         recyclerView = (RecyclerView) getActivity().findViewById(R.id.cardLayout2);
@@ -173,11 +171,12 @@ public class DeviceFragment extends Fragment implements DeviceInfoPresenter.IDev
                             String s = detail.get(j);
                             subItem.add(HandleInfoUtils.handleSingleDetail(s));
                         } else {
-                            recyclerViewData = new RecyclerViewData<DeviceInfo, DeviceInfo>(groupData,subItem);
-                            datas.add(recyclerViewData);
-                            break;
+
+                                break;
                         }
                     }
+                    recyclerViewData = new RecyclerViewData<DeviceInfo, DeviceInfo>(groupData,subItem);
+                    datas.add(recyclerViewData);
 
                 }
             }
@@ -391,9 +390,10 @@ public class DeviceFragment extends Fragment implements DeviceInfoPresenter.IDev
 
     @Override
     public void onFailure(String error) {
-        Looper.prepare();
-        Toast.makeText(getContext(), error, Toast.LENGTH_SHORT).show();
-        Looper.loop();
+//        Looper.prepare();
+//        Toast.makeText(getContext(), error, Toast.LENGTH_SHORT).show();
+//        Looper.loop();
+        Log.e("error",error);
     }
 }
 
