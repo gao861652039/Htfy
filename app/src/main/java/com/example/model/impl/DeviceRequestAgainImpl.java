@@ -27,14 +27,14 @@ public class DeviceRequestAgainImpl implements DeviceRequsetAgainModel {
     private OnDeviceInfoListener listener;
 
     public DeviceRequestAgainImpl() {
-
+        EventBus.getDefault().register(this);
 
     }
 
     @Override
     public void loadDeviceInfo(int sel, String start, String end, OnDeviceInfoListener onDeviceInfoListener) {
 
-        EventBus.getDefault().register(this);
+
         listener = onDeviceInfoListener;
         st.socket_mode = 0x2;
         st.gdtm_sel = NumberUtils.toHex(sel);
@@ -60,7 +60,7 @@ public class DeviceRequestAgainImpl implements DeviceRequsetAgainModel {
                 deviceInfo = GetGdtmInfoUtils.getDeviceInfo(st.gdtm_data);
                 detailInfo = GetGdtmInfoUtils.getDetailInfo(st.gdtm_data);
                 listener.onSuccess(deviceInfo, detailInfo);
-                EventBus.getDefault().unregister(this);
+
             }
         } catch (NullPointerException e) {
             listener.onFailure("获取数据失败");

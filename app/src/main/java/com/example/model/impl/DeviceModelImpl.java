@@ -27,13 +27,13 @@ public class DeviceModelImpl implements DeviceModel {
    private OnDeviceInfoListener listener;
 
      public DeviceModelImpl(){
-
+         EventBus.getDefault().register(this);
      }
 
     @Override
     public void loadDeviceInfo(int sel, OnDeviceInfoListener onDeviceInfoListener) {
 
-        EventBus.getDefault().register(this);
+
         listener = onDeviceInfoListener;
         st.socket_mode = 0x2;
         st.gdtm_sel = NumberUtils.toHex(sel);
@@ -58,7 +58,7 @@ public class DeviceModelImpl implements DeviceModel {
                 deviceInfo = GetGdtmInfoUtils.getDeviceInfo(st.gdtm_data);
                 detailInfo = GetGdtmInfoUtils.getDetailInfo(st.gdtm_data);
                 listener.onSuccess(deviceInfo, detailInfo);
-                EventBus.getDefault().unregister(this);
+
             }
         }catch (NullPointerException e){
              listener.onFailure("获取数据失败");

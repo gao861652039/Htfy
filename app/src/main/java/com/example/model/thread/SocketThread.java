@@ -480,7 +480,6 @@ public class SocketThread extends Thread {
                 break;
             }
         } while (false);
-
         if (socketUserLogout() != 0x0)
             return;
         if (socketClose() != 0x0)
