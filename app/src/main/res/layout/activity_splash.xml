@@ -1,20 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/activity_splash"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:gravity="center"
     android:background="#fff"
 
-    tools:context="com.example.activity.SplashActivity">
+    tools:context="com.example.view.activity.SplashActivity">
 
     <ImageView
         android:layout_width="150dp"
         android:layout_height="150dp"
-        android:layout_gravity="center"
+        android:layout_centerVertical="true"
+        android:layout_centerHorizontal="true"
+        android:layout_centerInParent="true"
         android:src="@drawable/start"/>
 
+    <TextView
+        android:layout_alignParentBottom ="true"
+        android:gravity="center_horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="15dp"
+        android:text="Copyright (c)  2017 宏泰丰业有限公司"/>
 
-</LinearLayout>
+</RelativeLayout>

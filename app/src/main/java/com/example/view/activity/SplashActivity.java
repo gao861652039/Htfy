@@ -1,3 +1,10 @@
+
+
+/*
+ * Copyright (c)  2017 宏泰丰业有限公司
+ *
+ */
+
 package com.example.view.activity;
 
 import android.content.Intent;

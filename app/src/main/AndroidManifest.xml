@@ -25,7 +25,7 @@
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launch"
-        android:label="Demo"
+        android:label="宏泰丰业消毒制水监控"
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:replace="android:label">
