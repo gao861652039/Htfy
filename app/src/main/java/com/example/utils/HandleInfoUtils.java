@@ -44,7 +44,7 @@ public class HandleInfoUtils {
            MainActivity.deviceFragment.setter(chartEntities);
 
 
-            return new DeviceInfo(disContent(time), getAlarmCode(alarmInfo),
+            return new DeviceInfo(disContent(time), deviceId+"号机"+getAlarmCode(alarmInfo),
                       "[PH:" + handlePH(ph) + "]" +
                             "[ORP:" + orp + "mv]" +
                             "[有效氯:" + yxl + "mg/L]", false);
