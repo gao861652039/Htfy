@@ -239,6 +239,10 @@ public class SocketThread extends Thread {
             return socket_state;
         }
         gdtm_max = (buff[0] - 0x30) * 10 + (buff[1] - 0x30);
+        if(gdtm_max<0){
+            gdtm_id = new String[0];
+            gdtm_info = new String[0];
+        }
         gdtm_id = new String[gdtm_max];
         gdtm_info = new String[gdtm_max];
         //接收用户下挂的gdtm_id
