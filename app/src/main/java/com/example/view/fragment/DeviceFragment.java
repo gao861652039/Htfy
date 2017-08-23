@@ -78,6 +78,7 @@ public class DeviceFragment extends Fragment implements DeviceInfoPresenter.IDev
     private List<DeviceInfo> subItem;
     private DeviceAdapter deviceAdapter;
     private RecyclerViewData<DeviceInfo,DeviceInfo> recyclerViewData;
+    private  GridLayoutManager layoutManager;
 
     @Nullable
     @Override
@@ -119,13 +120,15 @@ public class DeviceFragment extends Fragment implements DeviceInfoPresenter.IDev
         MainActivity.tb.select(1,MainActivity.bars);
         sel = getSel();
         recyclerView = (RecyclerView) getActivity().findViewById(R.id.cardLayout2);
-        GridLayoutManager layoutManager = new GridLayoutManager(getActivity(), 1);
+        layoutManager = new GridLayoutManager(getActivity(), 1);
         recyclerView.setLayoutManager(layoutManager);
         sortByTime(datas);
         deviceAdapter = new DeviceAdapter(getContext(),datas);
         recyclerView.setAdapter(deviceAdapter);
         if(datas.size()!=0) {
-            recyclerView.smoothScrollToPosition(datas.size() - 1);
+
+            layoutManager.scrollToPosition(datas.size()-1);
+
         }
         deviceAdapter.notifyRecyclerViewData();
         bt.setOnClickListener(new View.OnClickListener() {
@@ -218,7 +221,7 @@ public class DeviceFragment extends Fragment implements DeviceInfoPresenter.IDev
             deviceAdapter = new DeviceAdapter(getContext(),datas);
             recyclerView.setAdapter(deviceAdapter);
             if(datas.size()!=0) {
-                recyclerView.smoothScrollToPosition(datas.size() - 1);
+                layoutManager.scrollToPosition(datas.size()-1);
             }
             deviceAdapter.notifyRecyclerViewData();
             progressDialog.dismiss();
